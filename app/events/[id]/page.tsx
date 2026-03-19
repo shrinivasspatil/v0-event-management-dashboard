@@ -84,6 +84,13 @@ const eventDetails: Record<string, {
   },
 }
 
+// Visitor registration forms created by admin
+const visitorRegistrationForms = [
+  { name: "Shrinivas", count: 99, color: "bg-primary" },
+  { name: "Vinay", count: 150, color: "bg-chart-2" },
+  { name: "Ravi", count: 9999, color: "bg-chart-3" },
+]
+
 const recentVisitors = [
   { name: "Sarah Johnson", email: "sarah.j@email.com", company: "TechCorp Inc.", date: "2 hours ago", avatar: "SJ" },
   { name: "Mike Chen", email: "mike.chen@company.com", company: "StartUp Labs", date: "4 hours ago", avatar: "MC" },
@@ -214,6 +221,34 @@ export default function EventOverviewPage() {
               </p>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Visitor Registration Forms */}
+        <div className="mb-8">
+          <h2 className="mb-4 text-lg font-semibold text-foreground">Visitor Registration Forms</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {visitorRegistrationForms.map((form) => (
+              <Card key={form.name} className="cursor-pointer transition-shadow hover:shadow-md">
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${form.color}/10`}>
+                        <Users className={`h-5 w-5 ${form.color.replace('bg-', 'text-')}`} />
+                      </div>
+                      <div>
+                        <p className="font-medium text-foreground">{form.name}</p>
+                        <p className="text-sm text-muted-foreground">Registration Form</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-bold text-foreground">{form.count.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground">registrations</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3">
