@@ -6,11 +6,7 @@ import {
   LayoutDashboard,
   Users,
   Building2,
-  CalendarDays,
-  BarChart3,
   Settings,
-  Mail,
-  Globe,
   ArrowLeft,
   ChevronDown,
 } from "lucide-react"
@@ -37,10 +33,6 @@ const sidebarItems = [
   { name: "Overview", href: "", icon: LayoutDashboard },
   { name: "Visitors", href: "/visitors", icon: Users },
   { name: "Exhibitors", href: "/exhibitors", icon: Building2 },
-  { name: "Sessions", href: "/sessions", icon: CalendarDays },
-  { name: "Analytics", href: "/analytics", icon: BarChart3 },
-  { name: "Emails", href: "/emails", icon: Mail },
-  { name: "Website", href: "/website", icon: Globe },
   { name: "Settings", href: "/settings", icon: Settings },
 ]
 
@@ -120,15 +112,6 @@ export default function EventLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="border-t border-border p-4">
-          <Button variant="outline" className="w-full" asChild>
-            <Link href={`/events/${eventId}/website`}>
-              <Globe className="mr-2 h-4 w-4" />
-              View Event Page
-            </Link>
-          </Button>
-        </div>
       </aside>
 
       {/* Main Content */}
