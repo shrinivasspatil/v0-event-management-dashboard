@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { CreateEventModal } from "@/components/create-event-modal"
 import Link from "next/link"
 
 const events = [
@@ -80,6 +81,7 @@ const events = [
 export default function EventsPage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [searchQuery, setSearchQuery] = useState("")
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
   const filteredEvents = events.filter((event) =>
     event.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -87,6 +89,7 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <CreateEventModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} />
       {/* Top Header */}
       <header className="border-b border-border bg-card">
         <div className="flex items-center justify-between px-6 py-4">
@@ -130,7 +133,7 @@ export default function EventsPage() {
               Manage and organize all your events in one place
             </p>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => setIsCreateModalOpen(true)}>
             <Plus className="h-4 w-4" />
             Create Event
           </Button>
