@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Plus, Search, Calendar, MapPin, Users, MoreHorizontal, Filter, Grid3X3, List } from "lucide-react"
+import { Plus, Search, Calendar, MapPin, Users, Building2, MoreHorizontal, Filter, Grid3X3, List } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -22,7 +22,8 @@ const events = [
     date: "Apr 15-17, 2026",
     location: "San Francisco, CA",
     type: "In Person",
-    attendees: 1250,
+    visitors: 1250,
+    exhibitors: 78,
     status: "Published",
     image: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=200&fit=crop",
   },
@@ -32,7 +33,8 @@ const events = [
     date: "May 8-9, 2026",
     location: "Virtual",
     type: "Virtual",
-    attendees: 3500,
+    visitors: 3500,
+    exhibitors: 42,
     status: "Published",
     image: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400&h=200&fit=crop",
   },
@@ -42,7 +44,8 @@ const events = [
     date: "Jun 1, 2026",
     location: "New York, NY",
     type: "Hybrid",
-    attendees: 850,
+    visitors: 850,
+    exhibitors: 65,
     status: "Draft",
     image: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=400&h=200&fit=crop",
   },
@@ -52,7 +55,8 @@ const events = [
     date: "Jun 20, 2026",
     location: "Austin, TX",
     type: "In Person",
-    attendees: 200,
+    visitors: 200,
+    exhibitors: 15,
     status: "Published",
     image: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=400&h=200&fit=crop",
   },
@@ -62,7 +66,8 @@ const events = [
     date: "Jul 10-12, 2026",
     location: "Chicago, IL",
     type: "In Person",
-    attendees: 500,
+    visitors: 500,
+    exhibitors: 30,
     status: "Draft",
     image: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=200&fit=crop",
   },
@@ -72,7 +77,8 @@ const events = [
     date: "Aug 5, 2026",
     location: "Virtual",
     type: "Virtual",
-    attendees: 2000,
+    visitors: 2000,
+    exhibitors: 55,
     status: "Published",
     image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=400&h=200&fit=crop",
   },
@@ -142,15 +148,21 @@ export default function EventsPage() {
         </div>
 
         {/* Stats Overview */}
-        <div className="mb-8 grid gap-4 sm:grid-cols-3">
+        <div className="mb-8 grid gap-4 sm:grid-cols-4">
           <div className="rounded-xl border border-border bg-card p-5">
             <p className="text-sm font-medium text-muted-foreground">Total Events</p>
             <p className="mt-1 text-3xl font-bold text-foreground">{events.length}</p>
           </div>
           <div className="rounded-xl border border-border bg-card p-5">
-            <p className="text-sm font-medium text-muted-foreground">Total Attendees</p>
+            <p className="text-sm font-medium text-muted-foreground">Total Visitors</p>
             <p className="mt-1 text-3xl font-bold text-foreground">
-              {events.reduce((sum, e) => sum + e.attendees, 0).toLocaleString()}
+              {events.reduce((sum, e) => sum + e.visitors, 0).toLocaleString()}
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-5">
+            <p className="text-sm font-medium text-muted-foreground">Total Exhibitors</p>
+            <p className="mt-1 text-3xl font-bold text-foreground">
+              {events.reduce((sum, e) => sum + e.exhibitors, 0).toLocaleString()}
             </p>
           </div>
           <div className="rounded-xl border border-border bg-card p-5">
@@ -251,7 +263,11 @@ export default function EventsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="h-4 w-4" />
-                      <span>{event.attendees.toLocaleString()} attendees</span>
+                      <span>{event.visitors.toLocaleString()} visitors</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-4 w-4" />
+                      <span>{event.exhibitors} exhibitors</span>
                     </div>
                   </div>
                   <div className="mt-3">
@@ -292,7 +308,11 @@ export default function EventsPage() {
                     </span>
                     <span className="flex items-center gap-1">
                       <Users className="h-3.5 w-3.5" />
-                      {event.attendees.toLocaleString()}
+                      {event.visitors.toLocaleString()} visitors
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Building2 className="h-3.5 w-3.5" />
+                      {event.exhibitors} exhibitors
                     </span>
                   </div>
                 </div>

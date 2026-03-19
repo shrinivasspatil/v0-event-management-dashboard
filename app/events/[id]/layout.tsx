@@ -4,8 +4,8 @@ import { useParams, usePathname } from "next/navigation"
 import Link from "next/link"
 import {
   LayoutDashboard,
-  Ticket,
   Users,
+  Building2,
   CalendarDays,
   BarChart3,
   Settings,
@@ -35,8 +35,8 @@ const eventData: Record<string, { name: string; date: string; status: string }> 
 
 const sidebarItems = [
   { name: "Overview", href: "", icon: LayoutDashboard },
-  { name: "Tickets", href: "/tickets", icon: Ticket },
-  { name: "Attendees", href: "/attendees", icon: Users },
+  { name: "Visitors", href: "/visitors", icon: Users },
+  { name: "Exhibitors", href: "/exhibitors", icon: Building2 },
   { name: "Sessions", href: "/sessions", icon: CalendarDays },
   { name: "Analytics", href: "/analytics", icon: BarChart3 },
   { name: "Emails", href: "/emails", icon: Mail },
