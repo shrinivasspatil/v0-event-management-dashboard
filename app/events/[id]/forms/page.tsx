@@ -492,92 +492,160 @@ export default function FormsPage() {
 
       {/* View Form Details Modal */}
       <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {selectedForm?.name}
-              {selectedForm && getStatusBadge(selectedForm.status)}
-            </DialogTitle>
-            <DialogDescription>{selectedForm?.description || "No description"}</DialogDescription>
-          </DialogHeader>
+        <DialogContent className="sm:max-w-2xl p-0 gap-0 overflow-hidden">
           {selectedForm && (
-            <div className="space-y-6 py-4">
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-4">
-                <Card>
-                  <CardContent className="p-4">
-                    <p className="text-sm text-muted-foreground">Total Registrations</p>
-                    <p className="text-2xl font-bold">{selectedForm.registrations.total.toLocaleString()}</p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-4">
-                    <p className="text-sm text-muted-foreground">Registered</p>
-                    <p className="text-2xl font-bold text-blue-600">
-                      {selectedForm.registrations.registered.toLocaleString()}
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-4">
-                    <p className="text-sm text-muted-foreground">Attended</p>
-                    <p className="text-2xl font-bold text-green-600">
-                      {selectedForm.registrations.attended.toLocaleString()}
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card>
-                  <CardContent className="p-4">
-                    <p className="text-sm text-muted-foreground">Rejected</p>
-                    <p className="text-2xl font-bold text-red-600">
-                      {selectedForm.registrations.rejected.toLocaleString()}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* URL */}
-              <div>
-                <Label className="text-muted-foreground">Registration URL</Label>
-                <div className="mt-2 flex items-center gap-2">
-                  <div className="flex flex-1 items-center gap-2 rounded-md bg-muted px-3 py-2">
-                    <LinkIcon className="h-4 w-4 shrink-0 text-muted-foreground" />
-                    <p className="truncate text-sm">
-                      {baseUrl}/register/{eventId}/{selectedForm.slug}
-                    </p>
+            <>
+              {/* Header Section */}
+              <div className="bg-primary/5 border-b border-border p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
+                      <Users className="h-7 w-7 text-primary" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-xl font-bold text-foreground">{selectedForm.name}</h2>
+                        {getStatusBadge(selectedForm.status)}
+                      </div>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {selectedForm.description || "No description provided"}
+                      </p>
+                    </div>
                   </div>
-                  <Button variant="outline" size="icon" onClick={() => copyToClipboard(selectedForm)}>
+                </div>
+                
+                {/* Quick Actions */}
+                <div className="mt-5 flex items-center gap-3">
+                  <Button size="sm" asChild>
+                    <a
+                      href={`/register/${eventId}/${selectedForm.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="mr-2 h-4 w-4" />
+                      Open Form
+                    </a>
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => copyToClipboard(selectedForm)}>
                     {copiedId === selectedForm.id ? (
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <>
+                        <CheckCircle className="mr-2 h-4 w-4 text-green-600" />
+                        Copied!
+                      </>
                     ) : (
-                      <Copy className="h-4 w-4" />
+                      <>
+                        <Copy className="mr-2 h-4 w-4" />
+                        Copy URL
+                      </>
                     )}
+                  </Button>
+                  <Button size="sm" variant="outline">
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit Form
                   </Button>
                 </div>
               </div>
 
-              {/* Created Date */}
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Created on</span>
-                <span className="font-medium">{selectedForm.createdAt}</span>
+              {/* Content Section */}
+              <div className="p-6 space-y-6">
+                {/* Stats Grid */}
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3">Registration Statistics</h3>
+                  <div className="grid grid-cols-4 gap-4">
+                    <div className="rounded-xl border border-border bg-card p-4 text-center">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 mx-auto mb-2">
+                        <CheckCircle className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <p className="text-2xl font-bold text-blue-600">{selectedForm.registrations.registered.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Registered</p>
+                    </div>
+                    <div className="rounded-xl border border-border bg-card p-4 text-center">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 mx-auto mb-2">
+                        <Users className="h-5 w-5 text-green-600" />
+                      </div>
+                      <p className="text-2xl font-bold text-green-600">{selectedForm.registrations.attended.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Attended</p>
+                    </div>
+                    <div className="rounded-xl border border-border bg-card p-4 text-center">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 mx-auto mb-2">
+                        <XCircle className="h-5 w-5 text-red-600" />
+                      </div>
+                      <p className="text-2xl font-bold text-red-600">{selectedForm.registrations.rejected.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Rejected</p>
+                    </div>
+                    <div className="rounded-xl border border-border bg-card p-4 text-center">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-100 mx-auto mb-2">
+                        <Clock className="h-5 w-5 text-yellow-600" />
+                      </div>
+                      <p className="text-2xl font-bold text-yellow-600">{selectedForm.registrations.open.toLocaleString()}</p>
+                      <p className="text-xs text-muted-foreground mt-1">Open</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total Registrations Highlight */}
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                        <Users className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground">Total Registrations</p>
+                        <p className="text-3xl font-bold text-foreground">{selectedForm.registrations.total.toLocaleString()}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-muted-foreground">Conversion Rate</p>
+                      <p className="text-2xl font-bold text-green-600">
+                        {selectedForm.registrations.total > 0 
+                          ? Math.round((selectedForm.registrations.attended / selectedForm.registrations.total) * 100) 
+                          : 0}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* URL Section */}
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3">Registration URL</h3>
+                  <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/50 px-4 py-3">
+                    <LinkIcon className="h-4 w-4 shrink-0 text-primary" />
+                    <code className="flex-1 text-sm font-mono text-foreground truncate">
+                      {baseUrl}/register/{eventId}/{selectedForm.slug}
+                    </code>
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => copyToClipboard(selectedForm)}>
+                      {copiedId === selectedForm.id ? (
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Meta Info */}
+                <div className="flex items-center justify-between pt-4 border-t border-border text-sm">
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Clock className="h-4 w-4" />
+                    <span>Created on {selectedForm.createdAt}</span>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => {
+                      handleDeleteForm(selectedForm.id)
+                      setIsViewModalOpen(false)
+                    }}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Form
+                  </Button>
+                </div>
               </div>
-            </div>
+            </>
           )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsViewModalOpen(false)}>
-              Close
-            </Button>
-            <Button asChild>
-              <a
-                href={`/register/${eventId}/${selectedForm?.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Open Form
-              </a>
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
