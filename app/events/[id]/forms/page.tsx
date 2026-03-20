@@ -426,10 +426,10 @@ export default function FormsPage() {
 
       {/* Create Form Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" aria-describedby="create-form-description">
           <DialogHeader>
             <DialogTitle>Create Registration Form</DialogTitle>
-            <DialogDescription>
+            <DialogDescription id="create-form-description">
               Create a new visitor registration form with a unique URL
             </DialogDescription>
           </DialogHeader>
