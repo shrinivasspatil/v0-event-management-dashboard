@@ -9,6 +9,7 @@ import {
   Settings,
   ArrowLeft,
   ChevronDown,
+  FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -31,6 +32,7 @@ const eventData: Record<string, { name: string; date: string; status: string }> 
 
 const sidebarItems = [
   { name: "Overview", href: "", icon: LayoutDashboard },
+  { name: "Registration Forms", href: "/forms", icon: FileText },
   { name: "Visitors", href: "/visitors", icon: Users },
   { name: "Exhibitors", href: "/exhibitors", icon: Building2 },
   { name: "Settings", href: "/settings", icon: Settings },
