@@ -16,14 +16,17 @@ import {
   Trash2,
   CheckCircle2,
   PauseCircle,
-  Globe,
   MapPin,
+  Plus,
+  Pencil,
+  X,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 import {
   Table,
   TableBody,
@@ -46,6 +49,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 // Stats data
 const stats = [
@@ -79,125 +90,116 @@ const stats = [
   },
 ]
 
+interface Exhibitor {
+  id: string
+  name: string
+  email: string
+  whatsappNo: string
+  stallSizeSqmtrs: number
+  booth: string
+  registeredAt: string
+  status: string
+}
+
 // Sample exhibitors data
-const exhibitors = [
+const initialExhibitors: Exhibitor[] = [
   {
     id: "1",
-    companyName: "Tech Solutions Inc",
-    contactPerson: "John Anderson",
+    name: "John Anderson",
     email: "john@techsolutions.com",
-    phone: "+1 (555) 123-4567",
-    website: "techsolutions.com",
-    boothSize: "Large",
-    location: "Hall A - Booth 101",
+    whatsappNo: "+91 98765 43210",
+    stallSizeSqmtrs: 100,
+    booth: "Hall A - Booth 101",
     registeredAt: "Mar 15, 2026",
     status: "Attended",
   },
   {
     id: "2",
-    companyName: "Design Studio Pro",
-    contactPerson: "Sarah Mitchell",
+    name: "Sarah Mitchell",
     email: "sarah@designstudio.com",
-    phone: "+1 (555) 234-5678",
-    website: "designstudio.com",
-    boothSize: "Medium",
-    location: "Hall B - Booth 205",
+    whatsappNo: "+91 87654 32109",
+    stallSizeSqmtrs: 50,
+    booth: "Hall B - Booth 205",
     registeredAt: "Mar 14, 2026",
     status: "Registered",
   },
   {
     id: "3",
-    companyName: "Innovation Labs",
-    contactPerson: "Michael Chen",
+    name: "Michael Chen",
     email: "m.chen@innovationlabs.io",
-    phone: "+1 (555) 345-6789",
-    website: "innovationlabs.io",
-    boothSize: "Premium",
-    location: "Hall A - Booth 102",
+    whatsappNo: "+91 76543 21098",
+    stallSizeSqmtrs: 150,
+    booth: "Hall A - Booth 102",
     registeredAt: "Mar 14, 2026",
     status: "Attended",
   },
   {
     id: "4",
-    companyName: "Marketing Pro Agency",
-    contactPerson: "Emily Rodriguez",
+    name: "Emily Rodriguez",
     email: "emily@marketingpro.com",
-    phone: "+1 (555) 456-7890",
-    website: "marketingpro.com",
-    boothSize: "Small",
-    location: "Hall C - Booth 310",
+    whatsappNo: "+91 65432 10987",
+    stallSizeSqmtrs: 25,
+    booth: "Hall C - Booth 310",
     registeredAt: "Mar 13, 2026",
     status: "On Hold",
   },
   {
     id: "5",
-    companyName: "Startup Ventures",
-    contactPerson: "David Kim",
+    name: "David Kim",
     email: "d.kim@startupventures.co",
-    phone: "+1 (555) 567-8901",
-    website: "startupventures.co",
-    boothSize: "Medium",
-    location: "Hall B - Booth 208",
+    whatsappNo: "+91 54321 09876",
+    stallSizeSqmtrs: 50,
+    booth: "Hall B - Booth 208",
     registeredAt: "Mar 13, 2026",
     status: "Open",
   },
   {
     id: "6",
-    companyName: "Global Solutions Ltd",
-    contactPerson: "Lisa Thompson",
+    name: "Lisa Thompson",
     email: "lisa@globalsolutions.com",
-    phone: "+1 (555) 678-9012",
-    website: "globalsolutions.com",
-    boothSize: "Large",
-    location: "Hall A - Booth 105",
+    whatsappNo: "+91 43210 98765",
+    stallSizeSqmtrs: 100,
+    booth: "Hall A - Booth 105",
     registeredAt: "Mar 12, 2026",
     status: "Attended",
   },
   {
     id: "7",
-    companyName: "Enterprise Systems",
-    contactPerson: "James Wilson",
+    name: "James Wilson",
     email: "j.wilson@enterprise.com",
-    phone: "+1 (555) 789-0123",
-    website: "enterprise.com",
-    boothSize: "Premium",
-    location: "Hall A - Booth 103",
+    whatsappNo: "+91 32109 87654",
+    stallSizeSqmtrs: 200,
+    booth: "Hall A - Booth 103",
     registeredAt: "Mar 12, 2026",
     status: "Open",
   },
   {
     id: "8",
-    companyName: "Creative Agency Co",
-    contactPerson: "Amanda Foster",
+    name: "Amanda Foster",
     email: "a.foster@creativeagency.co",
-    phone: "+1 (555) 890-1234",
-    website: "creativeagency.co",
-    boothSize: "Small",
-    location: "Hall C - Booth 315",
+    whatsappNo: "+91 21098 76543",
+    stallSizeSqmtrs: 25,
+    booth: "Hall C - Booth 315",
     registeredAt: "Mar 11, 2026",
     status: "Registered",
   },
   {
     id: "9",
-    companyName: "Finance Plus Corp",
-    contactPerson: "Robert Martinez",
+    name: "Robert Martinez",
     email: "r.martinez@financeplus.com",
-    phone: "+1 (555) 901-2345",
-    website: "financeplus.com",
-    boothSize: "Medium",
-    location: "Hall B - Booth 210",
+    whatsappNo: "+91 10987 65432",
+    stallSizeSqmtrs: 75,
+    booth: "Hall B - Booth 210",
     registeredAt: "Mar 11, 2026",
     status: "Attended",
   },
   {
     id: "10",
-    companyName: "Health Tech Innovations",
-    contactPerson: "Jennifer Lee",
+    name: "Jennifer Lee",
     email: "j.lee@healthtech.io",
-    phone: "+1 (555) 012-3456",
-    website: "healthtech.io",
-    boothSize: "Large",
-    location: "Hall A - Booth 108",
+    whatsappNo: "+91 09876 54321",
+    stallSizeSqmtrs: 100,
+    booth: "Hall A - Booth 108",
     registeredAt: "Mar 10, 2026",
     status: "On Hold",
   },
@@ -218,36 +220,32 @@ const getStatusBadge = (status: string) => {
   }
 }
 
-const getBoothBadge = (size: string) => {
-  switch (size) {
-    case "Premium":
-      return <Badge className="bg-primary/10 text-primary hover:bg-primary/10">Premium</Badge>
-    case "Large":
-      return <Badge className="bg-indigo-100 text-indigo-700 hover:bg-indigo-100">Large</Badge>
-    case "Medium":
-      return <Badge variant="outline">Medium</Badge>
-    case "Small":
-      return <Badge variant="secondary">Small</Badge>
-    default:
-      return <Badge variant="secondary">{size}</Badge>
-  }
-}
-
 export default function ExhibitorsPage() {
   const params = useParams()
+  const [exhibitors, setExhibitors] = useState<Exhibitor[]>(initialExhibitors)
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedBoothSize, setSelectedBoothSize] = useState("all")
   const [selectedStatus, setSelectedStatus] = useState("all")
   const [selectedRows, setSelectedRows] = useState<string[]>([])
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false)
+  const [selectedExhibitor, setSelectedExhibitor] = useState<Exhibitor | null>(null)
+
+  // Add exhibitor form state
+  const [newExhibitor, setNewExhibitor] = useState({
+    name: "",
+    email: "",
+    whatsappNo: "",
+    stallSizeSqmtrs: "",
+    booth: "",
+  })
 
   const filteredExhibitors = exhibitors.filter((exhibitor) => {
     const matchesSearch =
-      exhibitor.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exhibitor.contactPerson.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exhibitor.email.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesBoothSize = selectedBoothSize === "all" || exhibitor.boothSize.toLowerCase() === selectedBoothSize.toLowerCase()
+      exhibitor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      exhibitor.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      exhibitor.booth.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = selectedStatus === "all" || exhibitor.status.toLowerCase() === selectedStatus.toLowerCase().replace(" ", "-")
-    return matchesSearch && matchesBoothSize && matchesStatus
+    return matchesSearch && matchesStatus
   })
 
   const toggleSelectAll = () => {
@@ -266,6 +264,30 @@ export default function ExhibitorsPage() {
     }
   }
 
+  const handleViewDetails = (exhibitor: Exhibitor) => {
+    setSelectedExhibitor(exhibitor)
+    setIsViewModalOpen(true)
+  }
+
+  const handleAddExhibitor = () => {
+    if (!newExhibitor.name || !newExhibitor.email || !newExhibitor.whatsappNo || !newExhibitor.stallSizeSqmtrs) return
+    
+    const exhibitor: Exhibitor = {
+      id: String(exhibitors.length + 1),
+      name: newExhibitor.name,
+      email: newExhibitor.email,
+      whatsappNo: newExhibitor.whatsappNo,
+      stallSizeSqmtrs: Number(newExhibitor.stallSizeSqmtrs),
+      booth: newExhibitor.booth || "Pending Assignment",
+      registeredAt: "Mar 20, 2026",
+      status: "Open",
+    }
+    
+    setExhibitors([exhibitor, ...exhibitors])
+    setNewExhibitor({ name: "", email: "", whatsappNo: "", stallSizeSqmtrs: "", booth: "" })
+    setIsAddModalOpen(false)
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -282,8 +304,8 @@ export default function ExhibitorsPage() {
               <Download className="h-4 w-4" />
               Export
             </Button>
-            <Button className="gap-2">
-              <Building2 className="h-4 w-4" />
+            <Button className="gap-2" onClick={() => setIsAddModalOpen(true)}>
+              <Plus className="h-4 w-4" />
               Add Exhibitor
             </Button>
           </div>
@@ -315,24 +337,12 @@ export default function ExhibitorsPage() {
           <div className="relative flex-1 min-w-[250px] max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search by company, contact, or email..."
+              placeholder="Search by name, email, or booth..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9"
             />
           </div>
-          <Select value={selectedBoothSize} onValueChange={setSelectedBoothSize}>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Booth Size" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Sizes</SelectItem>
-              <SelectItem value="premium">Premium</SelectItem>
-              <SelectItem value="large">Large</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="small">Small</SelectItem>
-            </SelectContent>
-          </Select>
           <Select value={selectedStatus} onValueChange={setSelectedStatus}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Status" />
@@ -384,12 +394,11 @@ export default function ExhibitorsPage() {
                     onCheckedChange={toggleSelectAll}
                   />
                 </TableHead>
-                <TableHead>Company</TableHead>
-                <TableHead>Contact Person</TableHead>
+                <TableHead>Name</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>WhatsApp No</TableHead>
+                <TableHead>Stall Size (Sqmtrs)</TableHead>
                 <TableHead>Booth</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Registered</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-12"></TableHead>
               </TableRow>
@@ -405,33 +414,35 @@ export default function ExhibitorsPage() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
-                        <Building2 className="h-4 w-4 text-primary" />
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                        <span className="text-sm font-medium text-primary">
+                          {exhibitor.name.split(" ").map(n => n[0]).join("")}
+                        </span>
                       </div>
-                      <div>
-                        <p className="font-medium text-foreground">{exhibitor.companyName}</p>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                          <Globe className="h-3 w-3" />
-                          {exhibitor.website}
-                        </div>
-                      </div>
+                      <span className="font-medium text-foreground">{exhibitor.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-foreground">{exhibitor.contactPerson}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Mail className="h-3.5 w-3.5" />
                       {exhibitor.email}
                     </div>
                   </TableCell>
-                  <TableCell>{getBoothBadge(exhibitor.boothSize)}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Phone className="h-3.5 w-3.5" />
+                      {exhibitor.whatsappNo}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <span className="font-medium text-foreground">{exhibitor.stallSizeSqmtrs} sqm</span>
+                  </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <MapPin className="h-3.5 w-3.5" />
-                      {exhibitor.location}
+                      {exhibitor.booth}
                     </div>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{exhibitor.registeredAt}</TableCell>
                   <TableCell>{getStatusBadge(exhibitor.status)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -441,7 +452,7 @@ export default function ExhibitorsPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className="gap-2">
+                        <DropdownMenuItem className="gap-2" onClick={() => handleViewDetails(exhibitor)}>
                           <Eye className="h-4 w-4" />
                           View Details
                         </DropdownMenuItem>
@@ -484,6 +495,148 @@ export default function ExhibitorsPage() {
           </div>
         </div>
       </div>
+
+      {/* Add Exhibitor Modal */}
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Add Exhibitor</DialogTitle>
+            <DialogDescription>
+              Register a new exhibitor for this event. Fields marked with * are required.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name <span className="text-destructive">*</span></Label>
+              <Input
+                id="name"
+                placeholder="Enter full name"
+                value={newExhibitor.name}
+                onChange={(e) => setNewExhibitor({ ...newExhibitor, name: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email <span className="text-destructive">*</span></Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                value={newExhibitor.email}
+                onChange={(e) => setNewExhibitor({ ...newExhibitor, email: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="whatsappNo">WhatsApp Mobile No <span className="text-destructive">*</span></Label>
+              <Input
+                id="whatsappNo"
+                placeholder="Enter WhatsApp number"
+                value={newExhibitor.whatsappNo}
+                onChange={(e) => setNewExhibitor({ ...newExhibitor, whatsappNo: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="stallSize">Required Stall Size (Sqmtrs) <span className="text-destructive">*</span></Label>
+              <Input
+                id="stallSize"
+                type="number"
+                placeholder="Enter stall size in square meters"
+                value={newExhibitor.stallSizeSqmtrs}
+                onChange={(e) => setNewExhibitor({ ...newExhibitor, stallSizeSqmtrs: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="booth">Booth Assignment</Label>
+              <Input
+                id="booth"
+                placeholder="e.g. Hall A - Booth 101"
+                value={newExhibitor.booth}
+                onChange={(e) => setNewExhibitor({ ...newExhibitor, booth: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsAddModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddExhibitor}>
+              Add Exhibitor
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Exhibitor Details Modal */}
+      <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Exhibitor Details</DialogTitle>
+          </DialogHeader>
+          {selectedExhibitor && (
+            <div className="py-4">
+              {/* Header with avatar */}
+              <div className="mb-6 flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                  <span className="text-xl font-semibold text-primary">
+                    {selectedExhibitor.name.split(" ").map(n => n[0]).join("")}
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground">{selectedExhibitor.name}</h3>
+                  <div className="mt-1">{getStatusBadge(selectedExhibitor.status)}</div>
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
+                  <Mail className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Email</p>
+                    <p className="font-medium text-foreground">{selectedExhibitor.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
+                  <Phone className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">WhatsApp Mobile No</p>
+                    <p className="font-medium text-foreground">{selectedExhibitor.whatsappNo}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
+                  <Building2 className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Required Stall Size</p>
+                    <p className="font-medium text-foreground">{selectedExhibitor.stallSizeSqmtrs} Sqmtrs</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 rounded-lg bg-muted/50 p-3">
+                  <MapPin className="h-5 w-5 text-muted-foreground" />
+                  <div>
+                    <p className="text-xs text-muted-foreground">Booth Assignment</p>
+                    <p className="font-medium text-foreground">{selectedExhibitor.booth}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="mt-6 flex gap-3">
+                <Button variant="outline" className="flex-1 gap-2">
+                  <Pencil className="h-4 w-4" />
+                  Edit
+                </Button>
+                <Button variant="outline" className="flex-1 gap-2">
+                  <Mail className="h-4 w-4" />
+                  Send Email
+                </Button>
+                <Button className="flex-1 gap-2">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Mark Attended
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
