@@ -265,6 +265,7 @@ export default function VisitorsPage() {
     mobileNo: "",
     city: "",
     industry: "",
+    registrationForm: "",
   })
 
   const filteredVisitors = visitors.filter((visitor) => {
@@ -299,7 +300,7 @@ export default function VisitorsPage() {
   }
 
   const handleAddVisitor = () => {
-    if (!newVisitor.name || !newVisitor.email || !newVisitor.mobileNo) return
+    if (!newVisitor.name || !newVisitor.email || !newVisitor.mobileNo || !newVisitor.registrationForm) return
     
     const visitor: Visitor = {
       id: String(visitors.length + 1),
@@ -308,13 +309,13 @@ export default function VisitorsPage() {
       mobileNo: newVisitor.mobileNo,
       city: newVisitor.city,
       industry: newVisitor.industry,
-      registrationForm: "Shrinivas",
+      registrationForm: newVisitor.registrationForm,
       registeredAt: "Mar 20, 2026",
       status: "Open",
     }
     
     setVisitors([visitor, ...visitors])
-    setNewVisitor({ name: "", email: "", mobileNo: "", city: "", industry: "" })
+    setNewVisitor({ name: "", email: "", mobileNo: "", city: "", industry: "", registrationForm: "" })
     setIsAddModalOpen(false)
   }
 
@@ -454,6 +455,7 @@ export default function VisitorsPage() {
                 <TableHead>Mobile No</TableHead>
                 <TableHead>City</TableHead>
                 <TableHead>Industry</TableHead>
+                <TableHead>Form</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-12"></TableHead>
               </TableRow>
@@ -491,6 +493,9 @@ export default function VisitorsPage() {
                       <Briefcase className="h-3.5 w-3.5" />
                       {visitor.industry}
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{visitor.registrationForm}</Badge>
                   </TableCell>
                   <TableCell>{getStatusBadge(visitor.status)}</TableCell>
                   <TableCell>
@@ -610,6 +615,24 @@ export default function VisitorsPage() {
                   {industries.map((industry) => (
                     <SelectItem key={industry} value={industry}>
                       {industry}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="form">Registration Form <span className="text-destructive">*</span></Label>
+              <Select
+                value={newVisitor.registrationForm}
+                onValueChange={(value) => setNewVisitor({ ...newVisitor, registrationForm: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select registration form" />
+                </SelectTrigger>
+                <SelectContent>
+                  {registrationForms.filter(f => f.id !== "all").map((form) => (
+                    <SelectItem key={form.id} value={form.name}>
+                      {form.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
