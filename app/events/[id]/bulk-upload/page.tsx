@@ -87,10 +87,11 @@ export default function BulkUploadPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
   const [bulkAction, setBulkAction] = useState<"Attended" | "Rejected" | "delete" | null>(null)
-  const [registrationForm, setRegistrationForm] = useState<string>("")
+  const [registrationForm, setRegistrationForm] = useState<string>("system")
 
   // Registration forms
   const registrationForms = [
+    { id: "system", name: "System", isDefault: true },
     { id: "1", name: "Shrinivas" },
     { id: "2", name: "Vinay" },
     { id: "3", name: "Ravi" },
