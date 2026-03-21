@@ -12,6 +12,7 @@ import {
   FileText,
   Mail,
   MessageSquare,
+  MessageCircle,
   Upload,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -41,6 +42,7 @@ const sidebarItems = [
   { name: "Bulk Upload", href: "/bulk-upload", icon: Upload },
   { name: "Email Templates", href: "/email-templates", icon: Mail },
   { name: "SMS Templates", href: "/sms-templates", icon: MessageSquare },
+  { name: "WhatsApp Templates", href: "/whatsapp-templates", icon: MessageCircle },
   { name: "Settings", href: "/settings", icon: Settings },
 ]
 
