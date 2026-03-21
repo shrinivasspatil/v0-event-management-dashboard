@@ -2,17 +2,11 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useParams } from "next/navigation"
-import { ArrowRight, CheckCircle2, MapPin, Calendar, Clock, Users } from "lucide-react"
+import { CheckCircle2, ArrowLeft } from "lucide-react"
 
-const eventData: Record<string, { name: string; date: string; location: string; time: string }> = {
-  "1": { name: "Tech Summit 2026", date: "April 15-17, 2026", location: "San Francisco, CA", time: "9:00 AM PST" },
-  "2": { name: "Design Conference", date: "May 8-9, 2026", location: "Virtual Event", time: "10:00 AM EST" },
-}
-
-const formData: Record<string, { name: string; description: string }> = {
-  "shrinivas": { name: "Shrinivas", description: "VIP Registration" },
-  "vinay": { name: "Vinay", description: "General Admission" },
-  "ravi": { name: "Ravi", description: "Early Bird Registration" },
+const eventData: Record<string, { name: string; date: string; location: string }> = {
+  "1": { name: "Tech Summit 2026", date: "April 15-17, 2026", location: "San Francisco, CA" },
+  "2": { name: "Design Conference", date: "May 8-9, 2026", location: "Virtual Event" },
 }
 
 const industries = [
@@ -23,23 +17,14 @@ const industries = [
 export default function PublicRegistrationPage() {
   const params = useParams()
   const eventId = params.eventId as string
-  const slug = params.slug as string
-  
   const event = eventData[eventId] || eventData["1"]
-  const form = formData[slug] || formData["shrinivas"]
 
   const [step, setStep] = useState<"mobile" | "otp" | "form" | "success">("mobile")
-  const [mobileNumber, setMobileNumber] = useState("")
+  const [mobile, setMobile] = useState("")
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
   const [isLoading, setIsLoading] = useState(false)
   const [resendTimer, setResendTimer] = useState(0)
-  const [formValues, setFormValues] = useState({
-    name: "",
-    email: "",
-    city: "",
-    industry: "",
-  })
-
+  const [formData, setFormData] = useState({ name: "", email: "", city: "", industry: "" })
   const otpRefs = useRef<(HTMLInputElement | null)[]>([])
 
   useEffect(() => {
@@ -49,10 +34,10 @@ export default function PublicRegistrationPage() {
     }
   }, [resendTimer])
 
-  const handleSendOTP = async () => {
-    if (mobileNumber.length < 10) return
+  const handleSendOtp = async () => {
+    if (mobile.length < 10) return
     setIsLoading(true)
-    await new Promise((r) => setTimeout(r, 1500))
+    await new Promise((r) => setTimeout(r, 1200))
     setIsLoading(false)
     setStep("otp")
     setResendTimer(30)
@@ -64,392 +49,235 @@ export default function PublicRegistrationPage() {
     const newOtp = [...otp]
     newOtp[index] = value.slice(-1)
     setOtp(newOtp)
-    if (value && index < 5) {
-      otpRefs.current[index + 1]?.focus()
-    }
+    if (value && index < 5) otpRefs.current[index + 1]?.focus()
   }
 
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpRefs.current[index - 1]?.focus()
-    }
+    if (e.key === "Backspace" && !otp[index] && index > 0) otpRefs.current[index - 1]?.focus()
   }
 
-  const handleVerifyOTP = async () => {
+  const handleVerifyOtp = async () => {
     if (otp.some((d) => !d)) return
     setIsLoading(true)
-    await new Promise((r) => setTimeout(r, 1500))
+    await new Promise((r) => setTimeout(r, 1200))
     setIsLoading(false)
     setStep("form")
   }
 
-  const handleSubmitForm = async () => {
-    if (!formValues.name || !formValues.email || !formValues.city || !formValues.industry) return
+  const handleSubmit = async () => {
+    if (!formData.name || !formData.email || !formData.city || !formData.industry) return
     setIsLoading(true)
-    await new Promise((r) => setTimeout(r, 2000))
+    await new Promise((r) => setTimeout(r, 1500))
     setIsLoading(false)
     setStep("success")
   }
 
-  const handleResendOTP = async () => {
-    if (resendTimer > 0) return
-    setIsLoading(true)
-    await new Promise((r) => setTimeout(r, 1000))
-    setIsLoading(false)
-    setResendTimer(30)
-    setOtp(["", "", "", "", "", ""])
-    otpRefs.current[0]?.focus()
-  }
-
   return (
-    <div className="min-h-screen bg-[#F5F0EB] relative overflow-hidden">
-      {/* Warm Gradient Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-0 w-[70%] h-full bg-gradient-to-bl from-[#C4A484]/30 via-[#D4B896]/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-[50%] h-[50%] bg-gradient-to-tr from-[#E8DFD8]/50 to-transparent" />
-      </div>
-
-      <div className="relative min-h-screen">
-        {/* Minimal Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 py-6">
-          <div className="flex items-center justify-between max-w-7xl mx-auto">
-            <div className="text-xl font-serif font-medium tracking-tight text-[#2C2C2C]">
-              Eventify
-            </div>
-            <div className="hidden md:block text-sm text-[#6B6B6B]">
-              {form.description}
-            </div>
+    <div className="min-h-screen bg-gradient-to-b from-violet-50 via-white to-violet-50/30 flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-[420px]">
+        
+        {/* Logo */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-purple-600 text-white text-xl font-bold mb-4 shadow-lg shadow-violet-500/25">
+            E
           </div>
-        </header>
+          <h1 className="text-xl font-semibold text-gray-900">{event.name}</h1>
+          <p className="text-sm text-gray-500 mt-1">{event.date} &bull; {event.location}</p>
+        </div>
 
-        {/* Main Content */}
-        <main className="min-h-screen flex flex-col lg:flex-row">
-          {/* Left Side - Hero Text */}
-          <div className="lg:w-1/2 flex flex-col justify-center px-6 lg:px-16 xl:px-24 pt-32 pb-12 lg:py-0">
-            <div className="max-w-xl">
-              <p className="text-sm uppercase tracking-[0.2em] text-[#8B7355] mb-6">
-                {event.date}
-              </p>
-              
-              <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal text-[#1A1A1A] leading-[0.95] mb-8 tracking-tight">
-                {event.name.split(" ").map((word, i) => (
-                  <span key={i} className="block">{word}</span>
-                ))}
-              </h1>
-
-              <p className="text-lg text-[#6B6B6B] leading-relaxed mb-12 max-w-md">
-                Join us for an extraordinary gathering of minds. Register now to secure your exclusive access.
-              </p>
-
-              {/* Event Meta */}
-              <div className="flex flex-wrap gap-8 text-sm text-[#6B6B6B]">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-[#8B7355]" />
-                  <span>{event.location}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#8B7355]" />
-                  <span>{event.time}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-[#8B7355]" />
-                  <span>2,500+ Attendees</span>
-                </div>
+        {/* Card */}
+        <div className="bg-white rounded-3xl shadow-2xl shadow-gray-200/60 p-8 sm:p-10">
+          
+          {/* Mobile Step */}
+          {step === "mobile" && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <h2 className="text-2xl font-semibold text-gray-900">Get Started</h2>
+                <p className="text-gray-500 mt-2">Enter your mobile number to continue</p>
               </div>
-            </div>
-          </div>
 
-          {/* Right Side - Form */}
-          <div className="lg:w-1/2 flex items-center justify-center px-6 lg:px-12 py-12 lg:py-0">
-            <div className="w-full max-w-md">
-              {/* Form Card */}
-              <div className="bg-white rounded-3xl shadow-2xl shadow-[#C4A484]/10 overflow-hidden">
-                {/* Progress */}
-                <div className="h-1 bg-[#F5F0EB]">
-                  <div 
-                    className="h-full bg-[#8B7355] transition-all duration-700 ease-out"
-                    style={{ 
-                      width: step === "mobile" ? "25%" : step === "otp" ? "50%" : step === "form" ? "75%" : "100%"
-                    }}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Mobile Number</label>
+                <input
+                  type="tel"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                  placeholder="Enter 10-digit mobile number"
+                  className="w-full h-14 px-5 text-lg bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                />
+              </div>
+
+              <button
+                onClick={handleSendOtp}
+                disabled={mobile.length < 10 || isLoading}
+                className="w-full h-14 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 text-white font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center shadow-lg shadow-violet-500/25 disabled:shadow-none"
+              >
+                {isLoading ? (
+                  <div className="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  "Send OTP"
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* OTP Step */}
+          {step === "otp" && (
+            <div className="space-y-6">
+              <button 
+                onClick={() => { setStep("mobile"); setOtp(["","","","","",""]); }}
+                className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+              >
+                <ArrowLeft className="w-4 h-4" /> Back
+              </button>
+
+              <div className="text-center">
+                <h2 className="text-2xl font-semibold text-gray-900">Verify OTP</h2>
+                <p className="text-gray-500 mt-2">Code sent to <span className="text-gray-900 font-medium">{mobile}</span></p>
+              </div>
+
+              <div className="flex justify-center gap-3">
+                {otp.map((digit, i) => (
+                  <input
+                    key={i}
+                    ref={(el) => { otpRefs.current[i] = el }}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleOtpChange(i, e.target.value)}
+                    onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                    className="w-12 h-14 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={handleVerifyOtp}
+                disabled={otp.some((d) => !d) || isLoading}
+                className="w-full h-14 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 text-white font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center shadow-lg shadow-violet-500/25 disabled:shadow-none"
+              >
+                {isLoading ? (
+                  <div className="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  "Verify"
+                )}
+              </button>
+
+              <p className="text-center text-sm text-gray-500">
+                {resendTimer > 0 ? (
+                  <>Resend in <span className="font-medium text-gray-700">{resendTimer}s</span></>
+                ) : (
+                  <button onClick={() => { setResendTimer(30); setOtp(["","","","","",""]); }} className="text-violet-600 font-medium hover:underline">
+                    Resend OTP
+                  </button>
+                )}
+              </p>
+            </div>
+          )}
+
+          {/* Form Step */}
+          {step === "form" && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <div className="inline-flex items-center gap-1.5 text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full mb-3">
+                  <CheckCircle2 className="w-4 h-4" /> Verified
+                </div>
+                <h2 className="text-2xl font-semibold text-gray-900">Complete Registration</h2>
+                <p className="text-gray-500 mt-2">Fill in your details</p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Name</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Your full name"
+                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
                   />
                 </div>
-
-                <div className="p-8 lg:p-10">
-                  {/* Mobile Step */}
-                  {step === "mobile" && (
-                    <div className="space-y-8">
-                      <div>
-                        <h2 className="font-serif text-3xl text-[#1A1A1A] mb-2">
-                          Let's begin
-                        </h2>
-                        <p className="text-[#6B6B6B]">
-                          Enter your mobile number to get started
-                        </p>
-                      </div>
-
-                      <div className="space-y-6">
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#8B7355] mb-3">
-                            Mobile Number
-                          </label>
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center justify-center w-16 h-14 bg-[#F5F0EB] rounded-xl text-[#6B6B6B] text-sm font-medium">
-                              +91
-                            </div>
-                            <input
-                              type="tel"
-                              value={mobileNumber}
-                              onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                              placeholder="9876543210"
-                              className="flex-1 h-14 px-5 bg-[#F5F0EB] rounded-xl text-[#1A1A1A] text-lg placeholder:text-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
-                            />
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={handleSendOTP}
-                          disabled={mobileNumber.length < 10 || isLoading}
-                          className="w-full h-14 bg-[#1A1A1A] hover:bg-[#2C2C2C] disabled:bg-[#E8DFD8] disabled:text-[#C4A484] text-white rounded-xl font-medium flex items-center justify-center gap-3 transition-all duration-300"
-                        >
-                          {isLoading ? (
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          ) : (
-                            <>
-                              Send OTP
-                              <ArrowRight className="w-4 h-4" />
-                            </>
-                          )}
-                        </button>
-                      </div>
-
-                      <p className="text-center text-xs text-[#A0A0A0]">
-                        We'll send a verification code to this number
-                      </p>
-                    </div>
-                  )}
-
-                  {/* OTP Step */}
-                  {step === "otp" && (
-                    <div className="space-y-8">
-                      <div>
-                        <h2 className="font-serif text-3xl text-[#1A1A1A] mb-2">
-                          Verification
-                        </h2>
-                        <p className="text-[#6B6B6B]">
-                          Enter the code sent to <span className="text-[#1A1A1A]">+91 {mobileNumber}</span>
-                        </p>
-                      </div>
-
-                      <div className="space-y-6">
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#8B7355] mb-3">
-                            Enter OTP
-                          </label>
-                          <div className="flex justify-between gap-3">
-                            {otp.map((digit, index) => (
-                              <input
-                                key={index}
-                                ref={(el) => { otpRefs.current[index] = el }}
-                                type="text"
-                                inputMode="numeric"
-                                value={digit}
-                                onChange={(e) => handleOtpChange(index, e.target.value)}
-                                onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                                className="w-full aspect-square max-w-[56px] bg-[#F5F0EB] rounded-xl text-2xl font-semibold text-center text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/30 transition-all"
-                              />
-                            ))}
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={handleVerifyOTP}
-                          disabled={otp.some((d) => !d) || isLoading}
-                          className="w-full h-14 bg-[#1A1A1A] hover:bg-[#2C2C2C] disabled:bg-[#E8DFD8] disabled:text-[#C4A484] text-white rounded-xl font-medium flex items-center justify-center gap-3 transition-all duration-300"
-                        >
-                          {isLoading ? (
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          ) : (
-                            <>
-                              Verify
-                              <ArrowRight className="w-4 h-4" />
-                            </>
-                          )}
-                        </button>
-                      </div>
-
-                      <div className="flex items-center justify-between text-sm">
-                        <button
-                          onClick={() => { setStep("mobile"); setOtp(["", "", "", "", "", ""]) }}
-                          className="text-[#8B7355] hover:text-[#6B5544] transition-colors"
-                        >
-                          Change number
-                        </button>
-                        <button
-                          onClick={handleResendOTP}
-                          disabled={resendTimer > 0}
-                          className="text-[#8B7355] hover:text-[#6B5544] disabled:text-[#C4A484] transition-colors"
-                        >
-                          {resendTimer > 0 ? `Resend in ${resendTimer}s` : "Resend OTP"}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Form Step */}
-                  {step === "form" && (
-                    <div className="space-y-6">
-                      <div>
-                        <div className="inline-flex items-center gap-2 text-green-600 text-sm mb-3">
-                          <CheckCircle2 className="w-4 h-4" />
-                          <span>Mobile verified</span>
-                        </div>
-                        <h2 className="font-serif text-3xl text-[#1A1A1A] mb-2">
-                          Your details
-                        </h2>
-                        <p className="text-[#6B6B6B]">
-                          Complete your registration
-                        </p>
-                      </div>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#8B7355] mb-2">
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            value={formValues.name}
-                            onChange={(e) => setFormValues({ ...formValues, name: e.target.value })}
-                            placeholder="Enter your name"
-                            className="w-full h-12 px-4 bg-[#F5F0EB] rounded-xl text-[#1A1A1A] placeholder:text-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#8B7355] mb-2">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            value={formValues.email}
-                            onChange={(e) => setFormValues({ ...formValues, email: e.target.value })}
-                            placeholder="your@email.com"
-                            className="w-full h-12 px-4 bg-[#F5F0EB] rounded-xl text-[#1A1A1A] placeholder:text-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#8B7355] mb-2">
-                            Mobile
-                          </label>
-                          <input
-                            type="text"
-                            value={`+91 ${mobileNumber}`}
-                            disabled
-                            className="w-full h-12 px-4 bg-[#E8DFD8]/50 rounded-xl text-[#6B6B6B] cursor-not-allowed"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#8B7355] mb-2">
-                            City
-                          </label>
-                          <input
-                            type="text"
-                            value={formValues.city}
-                            onChange={(e) => setFormValues({ ...formValues, city: e.target.value })}
-                            placeholder="Your city"
-                            className="w-full h-12 px-4 bg-[#F5F0EB] rounded-xl text-[#1A1A1A] placeholder:text-[#C4A484] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 transition-all"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-xs uppercase tracking-wider text-[#8B7355] mb-2">
-                            Industry
-                          </label>
-                          <select
-                            value={formValues.industry}
-                            onChange={(e) => setFormValues({ ...formValues, industry: e.target.value })}
-                            className="w-full h-12 px-4 bg-[#F5F0EB] rounded-xl text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#8B7355]/20 transition-all appearance-none cursor-pointer"
-                          >
-                            <option value="" className="text-[#C4A484]">Select industry</option>
-                            {industries.map((ind) => (
-                              <option key={ind} value={ind}>{ind}</option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <button
-                          onClick={handleSubmitForm}
-                          disabled={!formValues.name || !formValues.email || !formValues.city || !formValues.industry || isLoading}
-                          className="w-full h-14 bg-[#1A1A1A] hover:bg-[#2C2C2C] disabled:bg-[#E8DFD8] disabled:text-[#C4A484] text-white rounded-xl font-medium flex items-center justify-center gap-3 transition-all duration-300 mt-2"
-                        >
-                          {isLoading ? (
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          ) : (
-                            <>
-                              Complete Registration
-                              <ArrowRight className="w-4 h-4" />
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Success Step */}
-                  {step === "success" && (
-                    <div className="text-center py-6">
-                      <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-50 flex items-center justify-center">
-                        <CheckCircle2 className="w-10 h-10 text-green-500" />
-                      </div>
-
-                      <h2 className="font-serif text-3xl text-[#1A1A1A] mb-2">
-                        You're in!
-                      </h2>
-                      <p className="text-[#6B6B6B] mb-8">
-                        Your registration is confirmed for {event.name}
-                      </p>
-
-                      <div className="bg-[#F5F0EB] rounded-2xl p-6 text-left space-y-4 mb-6">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[#8B7355]">Name</span>
-                          <span className="font-medium text-[#1A1A1A]">{formValues.name}</span>
-                        </div>
-                        <div className="h-px bg-[#E8DFD8]" />
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[#8B7355]">Email</span>
-                          <span className="font-medium text-[#1A1A1A]">{formValues.email}</span>
-                        </div>
-                        <div className="h-px bg-[#E8DFD8]" />
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[#8B7355]">Mobile</span>
-                          <span className="font-medium text-[#1A1A1A]">+91 {mobileNumber}</span>
-                        </div>
-                        <div className="h-px bg-[#E8DFD8]" />
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-[#8B7355]">Reg. ID</span>
-                          <span className="font-mono font-medium text-[#8B7355]">
-                            EVT-{Math.random().toString(36).substring(2, 8).toUpperCase()}
-                          </span>
-                        </div>
-                      </div>
-
-                      <p className="text-sm text-[#A0A0A0]">
-                        Confirmation email sent to {formValues.email}
-                      </p>
-                    </div>
-                  )}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="your@email.com"
+                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Mobile</label>
+                  <input
+                    type="text"
+                    value={mobile}
+                    disabled
+                    className="w-full h-12 px-4 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 cursor-not-allowed"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">City</label>
+                  <input
+                    type="text"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    placeholder="Your city"
+                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Industry</label>
+                  <select
+                    value={formData.industry}
+                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="">Select industry</option>
+                    {industries.map((ind) => (
+                      <option key={ind} value={ind}>{ind}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
-              {/* Footer Text */}
-              <p className="text-center text-xs text-[#A0A0A0] mt-6">
-                Powered by Eventify
-              </p>
+              <button
+                onClick={handleSubmit}
+                disabled={!formData.name || !formData.email || !formData.city || !formData.industry || isLoading}
+                className="w-full h-14 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 text-white font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center shadow-lg shadow-violet-500/25 disabled:shadow-none"
+              >
+                {isLoading ? (
+                  <div className="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  "Register"
+                )}
+              </button>
             </div>
-          </div>
-        </main>
+          )}
+
+          {/* Success */}
+          {step === "success" && (
+            <div className="text-center py-4">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/30">
+                <CheckCircle2 className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">Registration Complete!</h2>
+              <p className="text-gray-500 mb-8">See you at {event.name}</p>
+              
+              <div className="bg-gray-50 rounded-2xl p-5 text-left space-y-3 text-sm">
+                <div className="flex justify-between"><span className="text-gray-500">Name</span><span className="font-medium text-gray-900">{formData.name}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Email</span><span className="font-medium text-gray-900">{formData.email}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Mobile</span><span className="font-medium text-gray-900">{mobile}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Event</span><span className="font-medium text-gray-900">{event.name}</span></div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <p className="text-center text-xs text-gray-400 mt-6">
+          By registering, you agree to our Terms & Privacy Policy
+        </p>
       </div>
     </div>
   )
