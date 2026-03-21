@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useRef } from "react"
 import { useParams } from "next/navigation"
-import { Phone, ArrowRight, CheckCircle, Loader2, Shield, RefreshCw } from "lucide-react"
+import { Phone, ArrowRight, CheckCircle, Loader2, Shield, RefreshCw, MapPin, Calendar, Users, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Select,
   SelectContent,
@@ -29,11 +28,12 @@ const industries = [
 ]
 
 // Mock event data
-const eventData: Record<string, { name: string; date: string; location: string; forms: Record<string, string> }> = {
+const eventData: Record<string, { name: string; date: string; location: string; attendees: number; forms: Record<string, string> }> = {
   "1": {
     name: "Tech Summit 2026",
     date: "Apr 15-17, 2026",
     location: "San Francisco, CA",
+    attendees: 2500,
     forms: {
       "shrinivas": "Shrinivas",
       "vinay": "Vinay",
@@ -44,6 +44,7 @@ const eventData: Record<string, { name: string; date: string; location: string; 
     name: "Design Conference",
     date: "May 8-9, 2026",
     location: "Virtual",
+    attendees: 5000,
     forms: {
       "shrinivas": "Shrinivas",
       "vinay": "Vinay",
@@ -97,7 +98,6 @@ export default function VisitorRegistrationPage() {
     setIsLoading(true)
     setError("")
     
-    // Simulate API call to send OTP
     await new Promise(resolve => setTimeout(resolve, 1500))
     
     setIsLoading(false)
@@ -114,7 +114,6 @@ export default function VisitorRegistrationPage() {
     setOtp(newOtp)
     setError("")
     
-    // Auto-focus next input
     if (value && index < 5) {
       otpRefs.current[index + 1]?.focus()
     }
@@ -148,10 +147,8 @@ export default function VisitorRegistrationPage() {
     setIsLoading(true)
     setError("")
     
-    // Simulate OTP verification (accept any 6 digits for demo)
     await new Promise(resolve => setTimeout(resolve, 1500))
     
-    // For demo, accept "123456" or any 6 digits
     setIsLoading(false)
     setStep("form")
   }
@@ -172,7 +169,6 @@ export default function VisitorRegistrationPage() {
       return
     }
     
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(formData.email)) {
       setError("Please enter a valid email address")
@@ -182,7 +178,6 @@ export default function VisitorRegistrationPage() {
     setIsLoading(true)
     setError("")
     
-    // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 2000))
     
     setIsLoading(false)
@@ -191,323 +186,415 @@ export default function VisitorRegistrationPage() {
 
   if (!event || !formName) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md text-center">
-          <CardContent className="p-8">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-100 mx-auto mb-4">
-              <span className="text-2xl text-red-600">!</span>
-            </div>
-            <h2 className="text-xl font-bold text-foreground mb-2">Registration Form Not Found</h2>
-            <p className="text-muted-foreground">
-              The registration form you are looking for does not exist or has been deactivated.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-4">
+        <div className="w-full max-w-md text-center bg-[#141414] rounded-2xl border border-white/10 p-10">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 mx-auto mb-5">
+            <span className="text-3xl text-red-400">!</span>
+          </div>
+          <h2 className="text-xl font-semibold text-white mb-3">Registration Form Not Found</h2>
+          <p className="text-gray-400 text-sm leading-relaxed">
+            The registration form you are looking for does not exist or has been deactivated.
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-primary/10 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Event Info Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-foreground">{event.name}</h1>
-          <p className="text-muted-foreground mt-1">{event.date} • {event.location}</p>
-          <p className="text-sm text-primary mt-2 font-medium">Visitor Registration - {formName}</p>
+    <div className="min-h-screen bg-[#0a0a0a] flex">
+      {/* Left Side - Event Info (Hidden on mobile) */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-800" />
+        
+        {/* Decorative elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-pink-500/20 to-violet-500/20 rounded-full blur-3xl" />
+        
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-white font-bold text-xl">Eventify</span>
+          </div>
+          
+          {/* Event Details */}
+          <div className="space-y-8">
+            <div>
+              <p className="text-white/60 text-sm uppercase tracking-widest mb-3">You are registering for</p>
+              <h1 className="text-5xl font-bold text-white leading-tight text-balance">{event.name}</h1>
+            </div>
+            
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3 text-white/80">
+                <div className="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center">
+                  <Calendar className="h-5 w-5" />
+                </div>
+                <span className="text-lg">{event.date}</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/80">
+                <div className="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center">
+                  <MapPin className="h-5 w-5" />
+                </div>
+                <span className="text-lg">{event.location}</span>
+              </div>
+              <div className="flex items-center gap-3 text-white/80">
+                <div className="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center">
+                  <Users className="h-5 w-5" />
+                </div>
+                <span className="text-lg">{event.attendees.toLocaleString()}+ Expected Attendees</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Footer */}
+          <div className="flex items-center gap-6">
+            <div className="flex -space-x-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-purple-700 flex items-center justify-center text-xs font-medium text-white">
+                  {String.fromCharCode(64 + i)}
+                </div>
+              ))}
+            </div>
+            <p className="text-white/60 text-sm">Join thousands of professionals at this event</p>
+          </div>
         </div>
+      </div>
 
-        {/* Step 1: Mobile Number */}
-        {step === "mobile" && (
-          <Card className="border-0 shadow-xl">
-            <CardHeader className="text-center pb-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mx-auto mb-3">
-                <Phone className="h-7 w-7 text-primary" />
+      {/* Right Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 lg:p-12">
+        <div className="w-full max-w-md">
+          {/* Mobile Event Header */}
+          <div className="lg:hidden text-center mb-8">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="h-8 w-8 rounded-lg bg-violet-600 flex items-center justify-center">
+                <Sparkles className="h-4 w-4 text-white" />
               </div>
-              <CardTitle className="text-xl">Enter Your Mobile Number</CardTitle>
-              <CardDescription>
-                We will send you a verification code to confirm your identity
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Select value={countryCode} onValueChange={setCountryCode}>
-                  <SelectTrigger className="w-24">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="+91">+91</SelectItem>
-                    <SelectItem value="+1">+1</SelectItem>
-                    <SelectItem value="+44">+44</SelectItem>
-                    <SelectItem value="+971">+971</SelectItem>
-                    <SelectItem value="+65">+65</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Input
-                  type="tel"
-                  placeholder="Enter mobile number"
-                  value={mobileNumber}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "").slice(0, 10)
-                    setMobileNumber(value)
-                    setError("")
-                  }}
-                  className="flex-1"
-                />
-              </div>
-              
-              {error && (
-                <p className="text-sm text-destructive text-center">{error}</p>
-              )}
-              
-              <Button 
-                className="w-full" 
-                onClick={handleMobileSubmit}
-                disabled={isLoading || mobileNumber.length < 10}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending OTP...
-                  </>
-                ) : (
-                  <>
-                    Continue
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-              
-              <p className="text-xs text-center text-muted-foreground">
-                By continuing, you agree to receive SMS for verification
-              </p>
-            </CardContent>
-          </Card>
-        )}
+              <span className="text-white font-bold">Eventify</span>
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">{event.name}</h1>
+            <p className="text-gray-400 text-sm">{event.date} | {event.location}</p>
+          </div>
 
-        {/* Step 2: OTP Verification */}
-        {step === "otp" && (
-          <Card className="border-0 shadow-xl">
-            <CardHeader className="text-center pb-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 mx-auto mb-3">
-                <Shield className="h-7 w-7 text-primary" />
+          {/* Progress Steps */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            {["mobile", "otp", "form", "success"].map((s, i) => (
+              <div key={s} className="flex items-center gap-2">
+                <div className={`h-2 w-8 rounded-full transition-all duration-300 ${
+                  step === s ? "bg-violet-500" : 
+                  ["mobile", "otp", "form", "success"].indexOf(step) > i ? "bg-violet-500/50" : "bg-white/10"
+                }`} />
               </div>
-              <CardTitle className="text-xl">Verify OTP</CardTitle>
-              <CardDescription>
-                Enter the 6-digit code sent to<br />
-                <span className="font-medium text-foreground">{countryCode} {mobileNumber}</span>
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-center gap-2" onPaste={handleOtpPaste}>
-                {otp.map((digit, index) => (
-                  <Input
-                    key={index}
-                    ref={(el) => { otpRefs.current[index] = el }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(index, e.target.value.replace(/\D/g, ""))}
-                    onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                    className="w-11 h-12 text-center text-lg font-semibold"
-                  />
-                ))}
-              </div>
-              
-              {error && (
-                <p className="text-sm text-destructive text-center">{error}</p>
-              )}
-              
-              <Button 
-                className="w-full" 
-                onClick={handleVerifyOtp}
-                disabled={isLoading || otp.join("").length !== 6}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Verifying...
-                  </>
-                ) : (
-                  <>
-                    Verify & Continue
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </>
-                )}
-              </Button>
-              
+            ))}
+          </div>
+
+          {/* Step 1: Mobile Number */}
+          {step === "mobile" && (
+            <div className="space-y-6">
               <div className="text-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleResendOtp}
-                  disabled={resendTimer > 0 || isLoading}
-                  className="text-muted-foreground"
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-500/10 border border-violet-500/20 mb-5">
+                  <Phone className="h-7 w-7 text-violet-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2">Enter your mobile number</h2>
+                <p className="text-gray-400">We will send you a verification code</p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex gap-3">
+                  <Select value={countryCode} onValueChange={setCountryCode}>
+                    <SelectTrigger className="w-28 bg-white/5 border-white/10 text-white h-14 rounded-xl">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#1a1a1a] border-white/10">
+                      <SelectItem value="+91">+91 IN</SelectItem>
+                      <SelectItem value="+1">+1 US</SelectItem>
+                      <SelectItem value="+44">+44 UK</SelectItem>
+                      <SelectItem value="+971">+971 UAE</SelectItem>
+                      <SelectItem value="+65">+65 SG</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    type="tel"
+                    placeholder="Mobile number"
+                    value={mobileNumber}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "").slice(0, 10)
+                      setMobileNumber(value)
+                      setError("")
+                    }}
+                    className="flex-1 bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-14 rounded-xl text-lg"
+                  />
+                </div>
+                
+                {error && (
+                  <p className="text-sm text-red-400 text-center">{error}</p>
+                )}
+                
+                <Button 
+                  className="w-full h-14 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-base font-medium transition-all duration-200" 
+                  onClick={handleMobileSubmit}
+                  disabled={isLoading || mobileNumber.length < 10}
                 >
-                  {resendTimer > 0 ? (
-                    <>Resend OTP in {resendTimer}s</>
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Sending OTP...
+                    </>
                   ) : (
                     <>
-                      <RefreshCw className="mr-2 h-4 w-4" />
-                      Resend OTP
+                      Continue
+                      <ArrowRight className="ml-2 h-5 w-5" />
                     </>
                   )}
                 </Button>
               </div>
               
-              <Button
-                variant="link"
-                size="sm"
-                className="w-full text-muted-foreground"
-                onClick={() => {
-                  setStep("mobile")
-                  setOtp(["", "", "", "", "", ""])
-                  setError("")
-                }}
-              >
-                Change mobile number
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+              <p className="text-xs text-center text-gray-500">
+                By continuing, you agree to receive SMS for verification purposes
+              </p>
+            </div>
+          )}
 
-        {/* Step 3: Registration Form */}
-        {step === "form" && (
-          <Card className="border-0 shadow-xl">
-            <CardHeader className="text-center pb-4">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100 mx-auto mb-3">
-                <CheckCircle className="h-7 w-7 text-green-600" />
-              </div>
-              <CardTitle className="text-xl">Complete Your Registration</CardTitle>
-              <CardDescription>
-                Mobile verified! Please fill in your details below
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name <span className="text-destructive">*</span></Label>
-                <Input
-                  id="name"
-                  placeholder="Enter your full name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
+          {/* Step 2: OTP Verification */}
+          {step === "otp" && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-500/10 border border-violet-500/20 mb-5">
+                  <Shield className="h-7 w-7 text-violet-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2">Verify OTP</h2>
+                <p className="text-gray-400">
+                  Enter the 6-digit code sent to<br />
+                  <span className="text-white font-medium">{countryCode} {mobileNumber}</span>
+                </p>
               </div>
               
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address <span className="text-destructive">*</span></Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Mobile Number</Label>
-                <Input
-                  value={formData.mobileNo}
-                  disabled
-                  className="bg-muted"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="city">City <span className="text-destructive">*</span></Label>
-                <Input
-                  id="city"
-                  placeholder="Enter your city"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="industry">Industry <span className="text-destructive">*</span></Label>
-                <Select
-                  value={formData.industry}
-                  onValueChange={(value) => setFormData({ ...formData, industry: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your industry" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {industries.map((industry) => (
-                      <SelectItem key={industry} value={industry}>
-                        {industry}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {error && (
-                <p className="text-sm text-destructive text-center">{error}</p>
-              )}
-              
-              <Button 
-                className="w-full" 
-                onClick={handleFormSubmit}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Submitting...
-                  </>
-                ) : (
-                  "Complete Registration"
+              <div className="space-y-4">
+                <div className="flex justify-center gap-3" onPaste={handleOtpPaste}>
+                  {otp.map((digit, index) => (
+                    <Input
+                      key={index}
+                      ref={(el) => { otpRefs.current[index] = el }}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleOtpChange(index, e.target.value.replace(/\D/g, ""))}
+                      onKeyDown={(e) => handleOtpKeyDown(index, e)}
+                      className="w-12 h-14 text-center text-xl font-bold bg-white/5 border-white/10 text-white rounded-xl focus:border-violet-500 focus:ring-violet-500/20"
+                    />
+                  ))}
+                </div>
+                
+                {error && (
+                  <p className="text-sm text-red-400 text-center">{error}</p>
                 )}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Step 4: Success */}
-        {step === "success" && (
-          <Card className="border-0 shadow-xl">
-            <CardContent className="p-8 text-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100 mx-auto mb-5">
-                <CheckCircle className="h-10 w-10 text-green-600" />
+                
+                <Button 
+                  className="w-full h-14 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-base font-medium" 
+                  onClick={handleVerifyOtp}
+                  disabled={isLoading || otp.join("").length !== 6}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Verifying...
+                    </>
+                  ) : (
+                    <>
+                      Verify & Continue
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </>
+                  )}
+                </Button>
+                
+                <div className="flex items-center justify-between">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setStep("mobile")
+                      setOtp(["", "", "", "", "", ""])
+                      setError("")
+                    }}
+                    className="text-gray-400 hover:text-white hover:bg-white/5"
+                  >
+                    Change number
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleResendOtp}
+                    disabled={resendTimer > 0 || isLoading}
+                    className="text-gray-400 hover:text-white hover:bg-white/5"
+                  >
+                    {resendTimer > 0 ? (
+                      <>Resend in {resendTimer}s</>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        Resend OTP
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
-              <h2 className="text-2xl font-bold text-foreground mb-2">Registration Successful!</h2>
-              <p className="text-muted-foreground mb-6">
-                Thank you for registering for {event.name}. You will receive a confirmation email shortly.
-              </p>
+            </div>
+          )}
+
+          {/* Step 3: Registration Form */}
+          {step === "form" && (
+            <div className="space-y-6">
+              <div className="text-center">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-green-500/10 border border-green-500/20 mb-5">
+                  <CheckCircle className="h-7 w-7 text-green-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white mb-2">Complete your registration</h2>
+                <p className="text-gray-400">Mobile verified! Fill in your details below</p>
+              </div>
               
-              <div className="rounded-lg bg-muted/50 p-4 text-left space-y-2 mb-6">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Name</span>
-                  <span className="font-medium">{formData.name}</span>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-gray-300 text-sm">Full Name <span className="text-red-400">*</span></Label>
+                  <Input
+                    placeholder="Enter your full name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-12 rounded-xl"
+                  />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Email</span>
-                  <span className="font-medium">{formData.email}</span>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-300 text-sm">Email Address <span className="text-red-400">*</span></Label>
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-12 rounded-xl"
+                  />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Mobile</span>
-                  <span className="font-medium">{formData.mobileNo}</span>
+                
+                <div className="space-y-2">
+                  <Label className="text-gray-300 text-sm">Mobile Number</Label>
+                  <Input
+                    value={formData.mobileNo}
+                    disabled
+                    className="bg-white/5 border-white/10 text-gray-400 h-12 rounded-xl"
+                  />
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Event</span>
-                  <span className="font-medium">{event.name}</span>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label className="text-gray-300 text-sm">City <span className="text-red-400">*</span></Label>
+                    <Input
+                      placeholder="Your city"
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      className="bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-12 rounded-xl"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label className="text-gray-300 text-sm">Industry <span className="text-red-400">*</span></Label>
+                    <Select
+                      value={formData.industry}
+                      onValueChange={(value) => setFormData({ ...formData, industry: value })}
+                    >
+                      <SelectTrigger className="bg-white/5 border-white/10 text-white h-12 rounded-xl">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#1a1a1a] border-white/10">
+                        {industries.map((industry) => (
+                          <SelectItem key={industry} value={industry}>
+                            {industry}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                {error && (
+                  <p className="text-sm text-red-400 text-center">{error}</p>
+                )}
+                
+                <Button 
+                  className="w-full h-14 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-base font-medium" 
+                  onClick={handleFormSubmit}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Complete Registration"
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Success */}
+          {step === "success" && (
+            <div className="space-y-6 text-center">
+              <div>
+                <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-green-500/10 border border-green-500/20 mb-5">
+                  <CheckCircle className="h-10 w-10 text-green-400" />
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-3">You are all set!</h2>
+                <p className="text-gray-400">
+                  Thank you for registering. A confirmation email has been sent to your inbox.
+                </p>
+              </div>
+              
+              <div className="rounded-2xl bg-white/5 border border-white/10 p-6 text-left space-y-4">
+                <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider">Registration Details</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-gray-400">Name</span>
+                    <span className="font-medium text-white">{formData.name}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-gray-400">Email</span>
+                    <span className="font-medium text-white">{formData.email}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2 border-b border-white/5">
+                    <span className="text-gray-400">Mobile</span>
+                    <span className="font-medium text-white">{formData.mobileNo}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-2">
+                    <span className="text-gray-400">Event</span>
+                    <span className="font-medium text-white">{event.name}</span>
+                  </div>
                 </div>
               </div>
               
-              <p className="text-sm text-muted-foreground">
-                Please save this confirmation for your records.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+              <div className="pt-4">
+                <p className="text-gray-500 text-sm mb-4">Add this event to your calendar</p>
+                <div className="flex justify-center gap-3">
+                  <Button variant="outline" size="sm" className="bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-lg">
+                    Google Calendar
+                  </Button>
+                  <Button variant="outline" size="sm" className="bg-white/5 border-white/10 text-white hover:bg-white/10 rounded-lg">
+                    Apple Calendar
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
-        {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          Powered by Eventify
-        </p>
+          {/* Footer */}
+          <p className="text-center text-xs text-gray-600 mt-8">
+            Powered by Eventify | Free Registration
+          </p>
+        </div>
       </div>
     </div>
   )
