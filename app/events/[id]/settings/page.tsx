@@ -6,6 +6,7 @@ import {
   Users,
   Mail,
   MessageSquare,
+  MessageCircle,
   Plus,
   Trash2,
   Pencil,
@@ -94,6 +95,19 @@ interface SMSConfig {
   lastTested?: string
 }
 
+interface WhatsAppConfig {
+  provider: "twilio" | "meta" | "gupshup" | "wati"
+  accountSid?: string
+  authToken?: string
+  apiKey?: string
+  accessToken?: string
+  phoneNumberId?: string
+  businessAccountId?: string
+  fromNumber: string
+  isConnected: boolean
+  lastTested?: string
+}
+
 // Initial Data
 const initialExecutives: Executive[] = [
   { id: "1", name: "Rahul Sharma", email: "rahul@company.com", role: "Admin", status: "Active", addedAt: "Mar 1, 2026" },
@@ -117,6 +131,15 @@ const initialSMSConfig: SMSConfig = {
   accountSid: "",
   authToken: "",
   senderId: "EVNTMGR",
+  isConnected: false,
+}
+
+const initialWhatsAppConfig: WhatsAppConfig = {
+  provider: "meta",
+  accessToken: "",
+  phoneNumberId: "",
+  businessAccountId: "",
+  fromNumber: "",
   isConnected: false,
 }
 
@@ -151,6 +174,13 @@ export default function SettingsPage() {
   const [smsTesting, setSmsTesting] = useState(false)
   const [smsSaving, setSmsSaving] = useState(false)
   const [smsTestResult, setSmsTestResult] = useState<"success" | "error" | null>(null)
+
+  // WhatsApp Config State
+  const [whatsappConfig, setWhatsAppConfig] = useState<WhatsAppConfig>(initialWhatsAppConfig)
+  const [showWhatsAppToken, setShowWhatsAppToken] = useState(false)
+  const [whatsappTesting, setWhatsAppTesting] = useState(false)
+  const [whatsappSaving, setWhatsAppSaving] = useState(false)
+  const [whatsappTestResult, setWhatsAppTestResult] = useState<"success" | "error" | null>(null)
 
   // Handlers - General Settings
   const handleSaveGeneral = async () => {
@@ -251,6 +281,35 @@ export default function SettingsPage() {
     setSmsSaving(false)
   }
 
+  // Handlers - WhatsApp Config
+  const handleTestWhatsAppConnection = async () => {
+    setWhatsAppTesting(true)
+    setWhatsAppTestResult(null)
+    await new Promise(resolve => setTimeout(resolve, 2000))
+    
+    // Simulate validation based on provider
+    let isValid = false
+    if (whatsappConfig.provider === "meta") {
+      isValid = !!(whatsappConfig.accessToken && whatsappConfig.phoneNumberId && whatsappConfig.fromNumber)
+    } else if (whatsappConfig.provider === "twilio") {
+      isValid = !!(whatsappConfig.accountSid && whatsappConfig.authToken && whatsappConfig.fromNumber)
+    } else {
+      isValid = !!(whatsappConfig.apiKey && whatsappConfig.fromNumber)
+    }
+    
+    setWhatsAppTestResult(isValid ? "success" : "error")
+    if (isValid) {
+      setWhatsAppConfig({ ...whatsappConfig, isConnected: true, lastTested: new Date().toLocaleString() })
+    }
+    setWhatsAppTesting(false)
+  }
+
+  const handleSaveWhatsAppConfig = async () => {
+    setWhatsAppSaving(true)
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    setWhatsAppSaving(false)
+  }
+
   const getRoleBadgeVariant = (role: Executive["role"]) => {
     switch (role) {
       case "Admin": return "default"
@@ -288,7 +347,7 @@ export default function SettingsPage() {
       {/* Content */}
       <div className="p-8">
         <Tabs defaultValue="general" className="space-y-6">
-          <TabsList className="grid w-full max-w-xl grid-cols-4">
+          <TabsList className="grid w-full max-w-3xl grid-cols-5">
             <TabsTrigger value="general" className="gap-2">
               <Settings className="h-4 w-4" />
               General
@@ -304,6 +363,10 @@ export default function SettingsPage() {
             <TabsTrigger value="sms" className="gap-2">
               <MessageSquare className="h-4 w-4" />
               SMS
+            </TabsTrigger>
+            <TabsTrigger value="whatsapp" className="gap-2">
+              <MessageCircle className="h-4 w-4" />
+              WhatsApp
             </TabsTrigger>
           </TabsList>
 
@@ -891,6 +954,265 @@ export default function SettingsPage() {
                   <p className="font-medium text-yellow-800">Security Note</p>
                   <p className="text-sm text-yellow-700">
                     Your API keys and credentials are encrypted and stored securely. Never share these credentials with unauthorized personnel.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* WhatsApp Configuration Tab */}
+          <TabsContent value="whatsapp" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      WhatsApp Configuration
+                      {whatsappConfig.isConnected ? (
+                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                          <CheckCircle className="mr-1 h-3 w-3" />
+                          Connected
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary">
+                          <XCircle className="mr-1 h-3 w-3" />
+                          Not Connected
+                        </Badge>
+                      )}
+                    </CardTitle>
+                    <CardDescription>Configure WhatsApp Business API for sending messages</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Provider Selection */}
+                <div className="space-y-2">
+                  <Label>WhatsApp Provider</Label>
+                  <Select
+                    value={whatsappConfig.provider}
+                    onValueChange={(value: WhatsAppConfig["provider"]) =>
+                      setWhatsAppConfig({ ...whatsappConfig, provider: value, isConnected: false })
+                    }
+                  >
+                    <SelectTrigger className="w-full md:w-64">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="meta">Meta (Official Cloud API)</SelectItem>
+                      <SelectItem value="twilio">Twilio WhatsApp</SelectItem>
+                      <SelectItem value="gupshup">Gupshup</SelectItem>
+                      <SelectItem value="wati">WATI</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Meta Configuration */}
+                {whatsappConfig.provider === "meta" && (
+                  <div className="space-y-4">
+                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                      <p className="text-sm text-blue-800">
+                        <strong>Meta Cloud API:</strong> You need a Meta Business Account with WhatsApp Business API access. 
+                        Get your credentials from the Meta Business Suite.
+                      </p>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label>Phone Number ID</Label>
+                        <Input
+                          value={whatsappConfig.phoneNumberId || ""}
+                          onChange={(e) => setWhatsAppConfig({ ...whatsappConfig, phoneNumberId: e.target.value })}
+                          placeholder="Enter Phone Number ID"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Business Account ID</Label>
+                        <Input
+                          value={whatsappConfig.businessAccountId || ""}
+                          onChange={(e) => setWhatsAppConfig({ ...whatsappConfig, businessAccountId: e.target.value })}
+                          placeholder="Enter Business Account ID"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Permanent Access Token</Label>
+                      <div className="relative">
+                        <Input
+                          type={showWhatsAppToken ? "text" : "password"}
+                          value={whatsappConfig.accessToken || ""}
+                          onChange={(e) => setWhatsAppConfig({ ...whatsappConfig, accessToken: e.target.value })}
+                          placeholder="Enter permanent access token"
+                          className="pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-0 top-0 h-full px-3"
+                          onClick={() => setShowWhatsAppToken(!showWhatsAppToken)}
+                        >
+                          {showWhatsAppToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Twilio WhatsApp Configuration */}
+                {whatsappConfig.provider === "twilio" && (
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Account SID</Label>
+                      <Input
+                        value={whatsappConfig.accountSid || ""}
+                        onChange={(e) => setWhatsAppConfig({ ...whatsappConfig, accountSid: e.target.value })}
+                        placeholder="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Auth Token</Label>
+                      <div className="relative">
+                        <Input
+                          type={showWhatsAppToken ? "text" : "password"}
+                          value={whatsappConfig.authToken || ""}
+                          onChange={(e) => setWhatsAppConfig({ ...whatsappConfig, authToken: e.target.value })}
+                          placeholder="Enter auth token"
+                          className="pr-10"
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-0 top-0 h-full px-3"
+                          onClick={() => setShowWhatsAppToken(!showWhatsAppToken)}
+                        >
+                          {showWhatsAppToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Gupshup / WATI Configuration */}
+                {(whatsappConfig.provider === "gupshup" || whatsappConfig.provider === "wati") && (
+                  <div className="space-y-2">
+                    <Label>API Key</Label>
+                    <div className="relative">
+                      <Input
+                        type={showWhatsAppToken ? "text" : "password"}
+                        value={whatsappConfig.apiKey || ""}
+                        onChange={(e) => setWhatsAppConfig({ ...whatsappConfig, apiKey: e.target.value })}
+                        placeholder={`Enter ${whatsappConfig.provider} API key`}
+                        className="pr-10"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-0 h-full px-3"
+                        onClick={() => setShowWhatsAppToken(!showWhatsAppToken)}
+                      >
+                        {showWhatsAppToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* From Number */}
+                <div className="space-y-2 md:w-64">
+                  <Label>WhatsApp Business Number</Label>
+                  <Input
+                    value={whatsappConfig.fromNumber}
+                    onChange={(e) => setWhatsAppConfig({ ...whatsappConfig, fromNumber: e.target.value })}
+                    placeholder="+919876543210"
+                  />
+                  <p className="text-xs text-muted-foreground">Include country code (e.g., +91 for India)</p>
+                </div>
+
+                {/* Test Result */}
+                {whatsappTestResult && (
+                  <div className={`flex items-center gap-2 rounded-lg p-4 ${
+                    whatsappTestResult === "success" 
+                      ? "bg-green-50 text-green-700 border border-green-200" 
+                      : "bg-red-50 text-red-700 border border-red-200"
+                  }`}>
+                    {whatsappTestResult === "success" ? (
+                      <>
+                        <CheckCircle className="h-5 w-5" />
+                        <div>
+                          <p className="font-medium">Connection Successful!</p>
+                          <p className="text-sm">WhatsApp Business API is properly configured and ready to send messages.</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <AlertTriangle className="h-5 w-5" />
+                        <div>
+                          <p className="font-medium">Connection Failed</p>
+                          <p className="text-sm">Please check your credentials and try again.</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {/* Last Tested */}
+                {whatsappConfig.lastTested && (
+                  <p className="text-sm text-muted-foreground">
+                    Last tested: {whatsappConfig.lastTested}
+                  </p>
+                )}
+
+                {/* Actions */}
+                <div className="flex items-center gap-3 pt-4 border-t">
+                  <Button onClick={handleTestWhatsAppConnection} variant="outline" disabled={whatsappTesting}>
+                    {whatsappTesting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Testing Connection...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        Test Connection
+                      </>
+                    )}
+                  </Button>
+                  <Button onClick={handleSaveWhatsAppConfig} disabled={whatsappSaving}>
+                    {whatsappSaving ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      "Save Configuration"
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* WhatsApp Info Note */}
+            <Card className="border-green-200 bg-green-50">
+              <CardContent className="flex items-start gap-3 p-4">
+                <MessageCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                <div>
+                  <p className="font-medium text-green-800">WhatsApp Business API</p>
+                  <p className="text-sm text-green-700">
+                    WhatsApp messages require pre-approved templates for business-initiated conversations. 
+                    Make sure your message templates are approved in your WhatsApp Business Manager before sending.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Security Note */}
+            <Card className="border-yellow-200 bg-yellow-50">
+              <CardContent className="flex items-start gap-3 p-4">
+                <Shield className="h-5 w-5 text-yellow-600 mt-0.5" />
+                <div>
+                  <p className="font-medium text-yellow-800">Security Note</p>
+                  <p className="text-sm text-yellow-700">
+                    Your API keys and access tokens are encrypted and stored securely. Never share these credentials with unauthorized personnel.
                   </p>
                 </div>
               </CardContent>
