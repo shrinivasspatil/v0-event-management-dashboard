@@ -234,6 +234,11 @@ export default function CompetitionsPage() {
   const [refundReason, setRefundReason] = useState("")
   const [refundAmount, setRefundAmount] = useState<number>(0)
   
+  // Winner selection states
+  const [firstWinner, setFirstWinner] = useState<string>("")
+  const [secondWinner, setSecondWinner] = useState<string>("")
+  const [thirdWinner, setThirdWinner] = useState<string>("")
+  
   // Form state for create/edit
   const [formData, setFormData] = useState({
     name: "",
@@ -1631,109 +1636,102 @@ export default function CompetitionsPage() {
               Choose winners from participants who have participated
             </DialogDescription>
           </DialogHeader>
-          {selectedCompetition && (
-            <div className="space-y-4 py-4">
-              {(() => {
-                const participatedOnly = selectedCompetition.participants.filter(p => p.status === "Participated")
-                const [firstWinner, setFirstWinner] = useState<string>("")
-                const [secondWinner, setSecondWinner] = useState<string>("")
-                const [thirdWinner, setThirdWinner] = useState<string>("")
+          {selectedCompetition && (() => {
+            const participatedOnly = selectedCompetition.participants.filter(p => p.status === "Participated")
+            
+            if (participatedOnly.length === 0) {
+              return (
+                <div className="text-center py-8">
+                  <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-3" />
+                  <p className="font-medium">No Participated Users</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Mark participants as &quot;Participated&quot; before selecting winners
+                  </p>
+                </div>
+              )
+            }
 
-                if (participatedOnly.length === 0) {
-                  return (
-                    <div className="text-center py-8">
-                      <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-3" />
-                      <p className="font-medium">No Participated Users</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Mark participants as &quot;Participated&quot; before selecting winners
-                      </p>
-                    </div>
-                  )
-                }
+            return (
+              <div className="space-y-4 py-4">
+                <div className="space-y-3">
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Crown className="h-4 w-4 text-yellow-500" />
+                      1st Prize (₹{selectedCompetition.prizes.first.toLocaleString()})
+                    </Label>
+                    <Select value={firstWinner} onValueChange={setFirstWinner}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select 1st place winner" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {participatedOnly.map(p => (
+                          <SelectItem key={p.id} value={p.id} disabled={p.id === secondWinner || p.id === thirdWinner}>
+                            {p.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                return (
-                  <>
-                    <div className="space-y-3">
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Crown className="h-4 w-4 text-yellow-500" />
-                          1st Prize (₹{selectedCompetition.prizes.first.toLocaleString()})
-                        </Label>
-                        <Select value={firstWinner} onValueChange={setFirstWinner}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select 1st place winner" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {participatedOnly.map(p => (
-                              <SelectItem key={p.id} value={p.id} disabled={p.id === secondWinner || p.id === thirdWinner}>
-                                {p.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Medal className="h-4 w-4 text-gray-400" />
+                      2nd Prize (₹{selectedCompetition.prizes.second.toLocaleString()})
+                    </Label>
+                    <Select value={secondWinner} onValueChange={setSecondWinner}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select 2nd place winner" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {participatedOnly.map(p => (
+                          <SelectItem key={p.id} value={p.id} disabled={p.id === firstWinner || p.id === thirdWinner}>
+                            {p.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Medal className="h-4 w-4 text-gray-400" />
-                          2nd Prize (₹{selectedCompetition.prizes.second.toLocaleString()})
-                        </Label>
-                        <Select value={secondWinner} onValueChange={setSecondWinner}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select 2nd place winner" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {participatedOnly.map(p => (
-                              <SelectItem key={p.id} value={p.id} disabled={p.id === firstWinner || p.id === thirdWinner}>
-                                {p.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <Award className="h-4 w-4 text-amber-600" />
+                      3rd Prize (₹{selectedCompetition.prizes.third.toLocaleString()})
+                    </Label>
+                    <Select value={thirdWinner} onValueChange={setThirdWinner}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select 3rd place winner" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {participatedOnly.map(p => (
+                          <SelectItem key={p.id} value={p.id} disabled={p.id === firstWinner || p.id === secondWinner}>
+                            {p.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
 
-                      <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Award className="h-4 w-4 text-amber-600" />
-                          3rd Prize (₹{selectedCompetition.prizes.third.toLocaleString()})
-                        </Label>
-                        <Select value={thirdWinner} onValueChange={setThirdWinner}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select 3rd place winner" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {participatedOnly.map(p => (
-                              <SelectItem key={p.id} value={p.id} disabled={p.id === firstWinner || p.id === secondWinner}>
-                                {p.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="pt-4 border-t">
-                      <p className="text-sm text-muted-foreground mb-4">
-                        Selecting winners will mark this competition as &quot;Completed&quot;
-                      </p>
-                      <div className="flex justify-end gap-2">
-                        <Button variant="outline" onClick={() => setIsWinnersModalOpen(false)}>
-                          Cancel
-                        </Button>
-                        <Button 
-                          onClick={() => handleSelectWinners(firstWinner, secondWinner, thirdWinner)}
-                          disabled={!firstWinner}
-                        >
-                          <Trophy className="mr-2 h-4 w-4" />
-                          Announce Winners
-                        </Button>
-                      </div>
-                    </div>
-                  </>
-                )
-              })()}
-            </div>
-          )}
+                <div className="pt-4 border-t">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Selecting winners will mark this competition as &quot;Completed&quot;
+                  </p>
+                  <div className="flex justify-end gap-2">
+                    <Button variant="outline" onClick={() => setIsWinnersModalOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={() => handleSelectWinners(firstWinner, secondWinner, thirdWinner)}
+                      disabled={!firstWinner}
+                    >
+                      <Trophy className="mr-2 h-4 w-4" />
+                      Announce Winners
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
         </DialogContent>
       </Dialog>
 
