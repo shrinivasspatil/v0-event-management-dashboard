@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Upload,
   UserX,
+  Trophy,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -40,6 +41,7 @@ const sidebarItems = [
   { name: "Registration Forms", href: "/forms", icon: FileText },
   { name: "Visitors", href: "/visitors", icon: Users },
   { name: "Exhibitors", href: "/exhibitors", icon: Building2 },
+  { name: "Competitions", href: "/competitions", icon: Trophy },
   { name: "Partial Registrations", href: "/partial-registrations", icon: UserX },
   { name: "Bulk Upload", href: "/bulk-upload", icon: Upload },
   { name: "Email Templates", href: "/email-templates", icon: Mail },
