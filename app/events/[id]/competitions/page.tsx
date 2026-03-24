@@ -574,9 +574,22 @@ export default function CompetitionsPage() {
                           ) : (
                             <>
                               <Copy className="mr-2 h-4 w-4" />
-                              Copy Link
+                              Copy Direct Link
                             </>
                           )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                          const url = `${window.location.origin}/compete/${eventId}`
+                          navigator.clipboard.writeText(url)
+                        }}>
+                          <LinkIcon className="mr-2 h-4 w-4" />
+                          Copy Registration Page
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <a href={`/compete/${eventId}`} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="mr-2 h-4 w-4" />
+                            Open Registration Page
+                          </a>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => {
@@ -894,19 +907,34 @@ export default function CompetitionsPage() {
                   </div>
                 )}
 
-                {/* URL */}
-                <div>
-                  <Label className="text-sm text-muted-foreground">Registration URL</Label>
-                  <div className="mt-2 flex items-center gap-2 rounded-lg border bg-muted/50 px-3 py-2">
-                    <LinkIcon className="h-4 w-4 shrink-0 text-primary" />
-                    <code className="flex-1 text-xs truncate">/compete/{eventId}/{selectedCompetition.slug}</code>
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => copyToClipboard(selectedCompetition)}>
-                      {copiedId === selectedCompetition.id ? (
-                        <CheckCircle className="h-3.5 w-3.5 text-green-600" />
-                      ) : (
+                {/* URLs */}
+                <div className="space-y-3">
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Direct Competition Link</Label>
+                    <div className="mt-1 flex items-center gap-2 rounded-lg border bg-muted/50 px-3 py-2">
+                      <LinkIcon className="h-4 w-4 shrink-0 text-primary" />
+                      <code className="flex-1 text-xs truncate">/compete/{eventId}/{selectedCompetition.slug}</code>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => copyToClipboard(selectedCompetition)}>
+                        {copiedId === selectedCompetition.id ? (
+                          <CheckCircle className="h-3.5 w-3.5 text-green-600" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <Label className="text-sm text-muted-foreground">Registration Page (All Competitions)</Label>
+                    <div className="mt-1 flex items-center gap-2 rounded-lg border border-violet-200 bg-violet-50 px-3 py-2">
+                      <LinkIcon className="h-4 w-4 shrink-0 text-violet-600" />
+                      <code className="flex-1 text-xs truncate text-violet-700">/compete/{eventId}</code>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/compete/${eventId}`)
+                      }}>
                         <Copy className="h-3.5 w-3.5" />
-                      )}
-                    </Button>
+                      </Button>
+                    </div>
+                    <p className="mt-1 text-xs text-muted-foreground">Users can select from all active competitions on this page</p>
                   </div>
                 </div>
 
