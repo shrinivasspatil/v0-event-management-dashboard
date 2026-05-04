@@ -2,36 +2,38 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useParams } from "next/navigation"
-import { CheckCircle2, ArrowLeft, Sparkles, Users, GraduationCap, ShoppingBag, Rocket, Target, Trophy, MapPin, Calendar, Clock } from "lucide-react"
+import {
+  CheckCircle2, ArrowLeft, Sparkles, Users, GraduationCap,
+  ShoppingBag, Rocket, Target, Trophy, MapPin, Calendar, Clock, Star
+} from "lucide-react"
 
-const eventData: Record<string, { name: string; date: string; location: string; tagline: string }> = {
-  "1": { name: "Tech Summit 2026", date: "April 15-17, 2026", location: "San Francisco, CA", tagline: "Where Technology Meets Innovation" },
-  "2": { name: "Beautify Expo 2026", date: "May 8-9, 2026", location: "Mumbai, India", tagline: "India's Premier Beauty & Wellness Trade Show" },
+const eventData: Record<string, { name: string; date: string; location: string; tagline: string; attendees: string }> = {
+  "1": { name: "Tech Summit 2026", date: "April 15–17, 2026", location: "San Francisco, CA", tagline: "Where Technology Meets Innovation", attendees: "5,000+" },
+  "2": { name: "Beautify Expo 2026", date: "May 8–9, 2026", location: "Mumbai, India", tagline: "India's Premier Beauty & Wellness Trade Show", attendees: "10,000+" },
 }
 
 const highlights = [
-  { icon: Sparkles, title: "Discover Latest Trends", desc: "Explore new product launches in cosmetics, skincare, haircare, nails & wellness", color: "from-pink-500 to-rose-500" },
-  { icon: Users, title: "Network with Leaders", desc: "Meet top brands, salon owners, distributors & professionals under one roof", color: "from-violet-500 to-purple-500" },
-  { icon: GraduationCap, title: "Learn from Experts", desc: "Live demos, masterclasses & workshops by leading beauty educators", color: "from-blue-500 to-cyan-500" },
-  { icon: ShoppingBag, title: "Source Products", desc: "Compare brands, negotiate bulk deals & find new suppliers", color: "from-amber-500 to-orange-500" },
-  { icon: Rocket, title: "Grow Your Business", desc: "Franchise opportunities, distribution partnerships & collaborations", color: "from-emerald-500 to-teal-500" },
-  { icon: Target, title: "Upgrade Skills", desc: "Advanced techniques & upcoming beauty trends", color: "from-indigo-500 to-blue-500" },
-  { icon: Trophy, title: "Live Competitions", desc: "Witness talent showcases & industry recognition awards", color: "from-yellow-500 to-amber-500" },
+  { icon: Sparkles, title: "Discover Latest Trends", desc: "Explore new product launches in cosmetics, skincare, haircare, nails & wellness", color: "bg-pink-50 text-pink-600 border-pink-100" },
+  { icon: Users, title: "Network with Leaders", desc: "Meet top brands, salon owners, distributors & professionals under one roof", color: "bg-violet-50 text-violet-600 border-violet-100" },
+  { icon: GraduationCap, title: "Learn from Experts", desc: "Live demos, masterclasses & workshops by leading beauty educators", color: "bg-blue-50 text-blue-600 border-blue-100" },
+  { icon: ShoppingBag, title: "Source Products Directly", desc: "Compare brands, negotiate bulk deals & find new suppliers for your business", color: "bg-amber-50 text-amber-600 border-amber-100" },
+  { icon: Rocket, title: "Grow Your Business", desc: "Franchise opportunities, distribution partnerships & collaborations", color: "bg-emerald-50 text-emerald-600 border-emerald-100" },
+  { icon: Target, title: "Upgrade Your Skills", desc: "Stay competitive by learning advanced techniques & upcoming trends", color: "bg-indigo-50 text-indigo-600 border-indigo-100" },
+  { icon: Trophy, title: "Live Competitions & Awards", desc: "Witness talent showcases & industry recognition that inspire growth", color: "bg-yellow-50 text-yellow-600 border-yellow-100" },
 ]
 
 const industries = [
   "Salon Owner", "Spa Owner", "Beautician", "Hair Stylist", "Makeup Artist",
-  "Nail Technician", "Skin Care Specialist", "Distributor", "Retailer", "Brand Representative",
-  "Trainer/Educator", "Student", "Other"
+  "Nail Technician", "Skin Care Specialist", "Distributor", "Retailer",
+  "Brand Representative", "Trainer/Educator", "Student", "Other"
 ]
 
 export default function PublicRegistrationPage() {
   const params = useParams()
   const eventId = params.eventId as string
-  const slug = params.slug as string
   const event = eventData[eventId] || eventData["2"]
 
-  const [step, setStep] = useState<"landing" | "mobile" | "otp" | "form" | "success">("landing")
+  const [step, setStep] = useState<"mobile" | "otp" | "form" | "success">("mobile")
   const [mobile, setMobile] = useState("")
   const [otp, setOtp] = useState(["", "", "", "", "", ""])
   const [isLoading, setIsLoading] = useState(false)
@@ -41,8 +43,8 @@ export default function PublicRegistrationPage() {
 
   useEffect(() => {
     if (resendTimer > 0) {
-      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000)
-      return () => clearTimeout(timer)
+      const t = setTimeout(() => setResendTimer(resendTimer - 1), 1000)
+      return () => clearTimeout(t)
     }
   }, [resendTimer])
 
@@ -58,9 +60,9 @@ export default function PublicRegistrationPage() {
 
   const handleOtpChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return
-    const newOtp = [...otp]
-    newOtp[index] = value.slice(-1)
-    setOtp(newOtp)
+    const next = [...otp]
+    next[index] = value.slice(-1)
+    setOtp(next)
     if (value && index < 5) otpRefs.current[index + 1]?.focus()
   }
 
@@ -84,390 +86,296 @@ export default function PublicRegistrationPage() {
     setStep("success")
   }
 
-  // Landing Page
-  if (step === "landing") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-violet-50">
-        {/* Hero Section */}
-        <div className="relative overflow-hidden">
-          {/* Decorative Elements */}
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-pink-300/30 to-rose-300/30 rounded-full blur-3xl" />
-            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-violet-300/30 to-purple-300/30 rounded-full blur-3xl" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-amber-200/20 to-orange-200/20 rounded-full blur-3xl" />
-          </div>
+  const stepIndex = step === "mobile" ? 0 : step === "otp" ? 1 : step === "form" ? 2 : 3
+  const steps = ["Mobile", "Verify", "Details"]
 
-          <div className="relative max-w-6xl mx-auto px-4 pt-12 pb-16">
-            {/* Event Badge */}
-            <div className="flex justify-center mb-8">
-              <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-rose-100 rounded-full px-4 py-2 shadow-sm">
-                <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-sm font-medium text-gray-700">Registration Open</span>
-              </div>
-            </div>
-
-            {/* Logo & Title */}
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-rose-500 via-pink-500 to-violet-500 text-white text-3xl font-bold mb-6 shadow-2xl shadow-rose-500/30">
-                B
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 leading-tight">
-                {event.name}
-              </h1>
-              <p className="text-xl md:text-2xl text-gray-600 font-medium mb-8">
-                {event.tagline}
-              </p>
-
-              {/* Event Details Pills */}
-              <div className="flex flex-wrap justify-center gap-3 mb-10">
-                <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
-                  <Calendar className="w-4 h-4 text-rose-500" />
-                  <span className="text-sm font-medium text-gray-700">{event.date}</span>
-                </div>
-                <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
-                  <MapPin className="w-4 h-4 text-rose-500" />
-                  <span className="text-sm font-medium text-gray-700">{event.location}</span>
-                </div>
-                <div className="inline-flex items-center gap-2 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
-                  <Clock className="w-4 h-4 text-rose-500" />
-                  <span className="text-sm font-medium text-gray-700">10:00 AM - 6:00 PM</span>
-                </div>
-              </div>
-
-              {/* CTA Button */}
-              <button
-                onClick={() => setStep("mobile")}
-                className="inline-flex items-center justify-center h-14 px-10 bg-gradient-to-r from-rose-500 via-pink-500 to-violet-500 hover:from-rose-600 hover:via-pink-600 hover:to-violet-600 text-white text-lg font-semibold rounded-full transition-all duration-300 shadow-xl shadow-rose-500/30 hover:shadow-2xl hover:shadow-rose-500/40 hover:scale-105"
-              >
-                Register Now - It&apos;s Free
-              </button>
-              <p className="text-sm text-gray-500 mt-4">Join 10,000+ beauty professionals</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Highlights Section */}
-        <div className="max-w-6xl mx-auto px-4 pb-20">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Why Attend?</h2>
-            <p className="text-gray-600">Everything you need to grow your beauty business</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {highlights.map((item, i) => (
-              <div
-                key={i}
-                className="group relative bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-xl hover:border-transparent transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${item.color} text-white mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  <item.icon className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom CTA */}
-          <div className="mt-16 text-center">
-            <div className="inline-block bg-gradient-to-r from-rose-50 to-violet-50 border border-rose-100 rounded-3xl p-8 md:p-12">
-              <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">Ready to Transform Your Business?</h3>
-              <p className="text-gray-600 mb-6 max-w-xl mx-auto">Register now and get exclusive access to all sessions, workshops, and networking opportunities.</p>
-              <button
-                onClick={() => setStep("mobile")}
-                className="inline-flex items-center justify-center h-12 px-8 bg-gradient-to-r from-rose-500 to-violet-500 hover:from-rose-600 hover:to-violet-600 text-white font-semibold rounded-full transition-all duration-300 shadow-lg shadow-rose-500/25 hover:shadow-xl"
-              >
-                Register for Free
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="border-t border-gray-100 py-6">
-          <p className="text-center text-sm text-gray-400">
-            Powered by Eventify | Contact: support@eventify.com
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  // Registration Flow (Mobile, OTP, Form, Success)
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-violet-50 flex items-center justify-center px-4 py-12">
-      {/* Decorative Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-pink-300/20 to-rose-300/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-violet-300/20 to-purple-300/20 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative w-full max-w-[420px]">
-        
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-500 via-pink-500 to-violet-500 text-white text-2xl font-bold mb-4 shadow-xl shadow-rose-500/25">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Topbar */}
+      <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
             B
           </div>
-          <h1 className="text-xl font-semibold text-gray-900">{event.name}</h1>
-          <p className="text-sm text-gray-500 mt-1">{event.date}</p>
+          <span className="font-semibold text-gray-900 text-sm hidden sm:block">{event.name}</span>
+        </div>
+        <div className="flex items-center gap-4 text-sm text-gray-500">
+          <span className="flex items-center gap-1.5">
+            <Calendar className="w-4 h-4 text-rose-400" />
+            {event.date}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <MapPin className="w-4 h-4 text-rose-400" />
+            {event.location}
+          </span>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col lg:flex-row max-w-screen-xl mx-auto w-full">
+
+        {/* LEFT — 75% content */}
+        <div className="flex-1 lg:w-3/4 px-6 lg:px-12 py-10">
+
+          {/* Hero */}
+          <div className="mb-10">
+            <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-medium rounded-full px-3 py-1.5 mb-5">
+              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+              Registration Open — Free Entry
+            </div>
+            <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4">
+              {event.name}
+            </h1>
+            <p className="text-lg text-gray-600 mb-6 max-w-xl">{event.tagline}</p>
+
+            <div className="flex flex-wrap gap-4 text-sm">
+              <div className="flex items-center gap-2 text-gray-700 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
+                <Calendar className="w-4 h-4 text-rose-500" /> {event.date}
+              </div>
+              <div className="flex items-center gap-2 text-gray-700 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
+                <MapPin className="w-4 h-4 text-rose-500" /> {event.location}
+              </div>
+              <div className="flex items-center gap-2 text-gray-700 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
+                <Clock className="w-4 h-4 text-rose-500" /> 10:00 AM – 6:00 PM
+              </div>
+              <div className="flex items-center gap-2 text-gray-700 bg-white border border-gray-200 rounded-full px-4 py-2 shadow-sm">
+                <Users className="w-4 h-4 text-rose-500" /> {event.attendees} Expected
+              </div>
+            </div>
+          </div>
+
+          {/* Social Proof */}
+          <div className="flex items-center gap-4 mb-10 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm w-fit">
+            <div className="flex -space-x-2">
+              {["Priya", "Ankit", "Sara", "Rahul", "Meena"].map((name, i) => (
+                <div
+                  key={i}
+                  className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold text-white shadow-sm"
+                  style={{ background: ["#f43f5e", "#8b5cf6", "#3b82f6", "#f59e0b", "#10b981"][i] }}
+                >
+                  {name[0]}
+                </div>
+              ))}
+            </div>
+            <div>
+              <div className="flex items-center gap-1 mb-0.5">
+                {[...Array(5)].map((_, i) => <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
+              </div>
+              <p className="text-sm text-gray-600"><strong className="text-gray-900">2,400+ professionals</strong> already registered</p>
+            </div>
+          </div>
+
+          {/* Why Attend */}
+          <div className="mb-10">
+            <h2 className="text-xl font-bold text-gray-900 mb-6">Why You Should Attend</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {highlights.map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-4 p-4 bg-white border border-gray-200 rounded-2xl hover:shadow-md hover:border-gray-300 transition-all duration-200"
+                >
+                  <div className={`flex-shrink-0 w-10 h-10 rounded-xl border flex items-center justify-center ${item.color}`}>
+                    <item.icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">{item.title}</p>
+                    <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer note */}
+          <p className="text-xs text-gray-400 pb-10">
+            Powered by Eventify &nbsp;·&nbsp; By registering, you agree to our Terms & Privacy Policy
+          </p>
         </div>
 
-        {/* Progress Steps */}
-        <div className="flex items-center justify-center gap-2 mb-8">
-          {["Mobile", "OTP", "Details"].map((label, i) => {
-            const stepIndex = step === "mobile" ? 0 : step === "otp" ? 1 : 2
-            const isActive = i <= stepIndex
-            const isCurrent = i === stepIndex
-            return (
-              <div key={label} className="flex items-center gap-2">
-                <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold transition-all duration-300 ${
-                  isActive 
-                    ? "bg-gradient-to-br from-rose-500 to-violet-500 text-white shadow-lg shadow-rose-500/25" 
-                    : "bg-gray-100 text-gray-400"
-                } ${isCurrent ? "ring-4 ring-rose-100" : ""}`}>
-                  {i + 1}
-                </div>
-                {i < 2 && (
-                  <div className={`w-8 h-1 rounded-full transition-all duration-300 ${isActive ? "bg-gradient-to-r from-rose-500 to-violet-500" : "bg-gray-200"}`} />
-                )}
+        {/* RIGHT — 25% sticky form */}
+        <div className="lg:w-1/4 min-w-[300px] shrink-0 px-4 lg:px-6 py-10 lg:border-l border-gray-200">
+          <div className="lg:sticky lg:top-24">
+
+            {/* Progress */}
+            {step !== "success" && (
+              <div className="flex items-center gap-1.5 mb-6">
+                {steps.map((label, i) => {
+                  const done = i < stepIndex
+                  const active = i === stepIndex
+                  return (
+                    <div key={label} className="flex items-center gap-1.5 flex-1">
+                      <div className={`flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold transition-all shrink-0 ${
+                        done ? "bg-green-500 text-white" :
+                        active ? "bg-gradient-to-br from-rose-500 to-violet-600 text-white ring-4 ring-rose-100" :
+                        "bg-gray-100 text-gray-400"
+                      }`}>
+                        {done ? <CheckCircle2 className="w-4 h-4" /> : i + 1}
+                      </div>
+                      <span className={`text-xs font-medium ${active ? "text-gray-900" : "text-gray-400"}`}>{label}</span>
+                      {i < 2 && <div className={`flex-1 h-px ${done ? "bg-green-400" : "bg-gray-200"}`} />}
+                    </div>
+                  )
+                })}
               </div>
-            )
-          })}
-        </div>
+            )}
 
-        {/* Card */}
-        <div className="bg-white rounded-3xl shadow-2xl shadow-gray-200/60 p-8 sm:p-10 border border-gray-100">
-          
-          {/* Mobile Step */}
-          {step === "mobile" && (
-            <div className="space-y-6">
-              <button 
-                onClick={() => setStep("landing")}
-                className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" /> Back to event
-              </button>
+            {/* Card */}
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
 
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-900">Get Started</h2>
-                <p className="text-gray-500 mt-2">Enter your mobile number to continue</p>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Mobile Number</label>
-                <input
-                  type="tel"
-                  value={mobile}
-                  onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                  placeholder="Enter 10-digit mobile number"
-                  className="w-full h-14 px-5 text-lg bg-gray-50 border border-gray-200 rounded-2xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
-                />
-              </div>
-
-              <button
-                onClick={handleSendOtp}
-                disabled={mobile.length < 10 || isLoading}
-                className="w-full h-14 bg-gradient-to-r from-rose-500 to-violet-500 hover:from-rose-600 hover:to-violet-600 disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 text-white font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center shadow-lg shadow-rose-500/25 disabled:shadow-none"
-              >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  "Send OTP"
-                )}
-              </button>
-            </div>
-          )}
-
-          {/* OTP Step */}
-          {step === "otp" && (
-            <div className="space-y-6">
-              <button 
-                onClick={() => { setStep("mobile"); setOtp(["","","","","",""]); }}
-                className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                <ArrowLeft className="w-4 h-4" /> Change number
-              </button>
-
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-900">Verify OTP</h2>
-                <p className="text-gray-500 mt-2">Code sent to <span className="text-gray-900 font-medium">{mobile}</span></p>
-              </div>
-
-              <div className="flex justify-center gap-3">
-                {otp.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => { otpRefs.current[i] = el }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(i, e.target.value)}
-                    onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                    className="w-12 h-14 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={handleVerifyOtp}
-                disabled={otp.some((d) => !d) || isLoading}
-                className="w-full h-14 bg-gradient-to-r from-rose-500 to-violet-500 hover:from-rose-600 hover:to-violet-600 disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 text-white font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center shadow-lg shadow-rose-500/25 disabled:shadow-none"
-              >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  "Verify & Continue"
-                )}
-              </button>
-
-              <p className="text-center text-sm text-gray-500">
-                {resendTimer > 0 ? (
-                  <>Resend in <span className="font-medium text-gray-700">{resendTimer}s</span></>
-                ) : (
-                  <button onClick={() => { setResendTimer(30); setOtp(["","","","","",""]); }} className="text-rose-600 font-medium hover:underline">
-                    Resend OTP
-                  </button>
-                )}
-              </p>
-            </div>
-          )}
-
-          {/* Form Step */}
-          {step === "form" && (
-            <div className="space-y-6">
-              <div className="text-center">
-                <div className="inline-flex items-center gap-1.5 text-sm text-green-600 bg-green-50 px-3 py-1.5 rounded-full mb-3 border border-green-100">
-                  <CheckCircle2 className="w-4 h-4" /> Mobile Verified
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">Almost Done!</h2>
-                <p className="text-gray-500 mt-2">Complete your registration</p>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name *</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Enter your full name"
-                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address *</label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="your@email.com"
-                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Mobile Number</label>
-                  <input
-                    type="text"
-                    value={mobile}
-                    disabled
-                    className="w-full h-12 px-4 bg-gray-100 border border-gray-200 rounded-xl text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">City *</label>
-                  <input
-                    type="text"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    placeholder="Your city"
-                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Profession *</label>
-                  <select
-                    value={formData.industry}
-                    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                    className="w-full h-12 px-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all appearance-none cursor-pointer"
+              {/* Mobile Step */}
+              {step === "mobile" && (
+                <div className="space-y-5">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Register Now</h3>
+                    <p className="text-sm text-gray-500 mt-0.5">Enter your mobile to get started</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wide">Mobile Number</label>
+                    <input
+                      type="tel"
+                      value={mobile}
+                      onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                      placeholder="10-digit mobile number"
+                      className="w-full h-12 px-4 text-base bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
+                    />
+                  </div>
+                  <button
+                    onClick={handleSendOtp}
+                    disabled={mobile.length < 10 || isLoading}
+                    className="w-full h-12 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20"
                   >
-                    <option value="">Select your profession</option>
-                    {industries.map((ind) => (
-                      <option key={ind} value={ind}>{ind}</option>
+                    {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Send OTP"}
+                  </button>
+                  <p className="text-xs text-center text-gray-400">Free entry. No payment required.</p>
+                </div>
+              )}
+
+              {/* OTP Step */}
+              {step === "otp" && (
+                <div className="space-y-5">
+                  <button onClick={() => { setStep("mobile"); setOtp(["","","","","",""]) }} className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 transition-colors">
+                    <ArrowLeft className="w-3.5 h-3.5" /> Change number
+                  </button>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Enter OTP</h3>
+                    <p className="text-sm text-gray-500 mt-0.5">Sent to <span className="font-medium text-gray-700">{mobile}</span></p>
+                  </div>
+                  <div className="flex justify-between gap-1.5">
+                    {otp.map((digit, i) => (
+                      <input
+                        key={i}
+                        ref={(el) => { otpRefs.current[i] = el }}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleOtpChange(i, e.target.value)}
+                        onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                        className="w-10 h-12 text-center text-xl font-bold bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
+                      />
                     ))}
-                  </select>
+                  </div>
+                  <button
+                    onClick={handleVerifyOtp}
+                    disabled={otp.some((d) => !d) || isLoading}
+                    className="w-full h-12 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20"
+                  >
+                    {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Verify & Continue"}
+                  </button>
+                  <p className="text-xs text-center text-gray-500">
+                    {resendTimer > 0 ? (
+                      <>Resend in <span className="font-medium text-gray-700">{resendTimer}s</span></>
+                    ) : (
+                      <button onClick={() => { setResendTimer(30); setOtp(["","","","","",""]) }} className="text-rose-600 font-medium hover:underline">Resend OTP</button>
+                    )}
+                  </p>
                 </div>
-              </div>
+              )}
 
-              <button
-                onClick={handleSubmit}
-                disabled={!formData.name || !formData.email || !formData.city || !formData.industry || isLoading}
-                className="w-full h-14 bg-gradient-to-r from-rose-500 to-violet-500 hover:from-rose-600 hover:to-violet-600 disabled:from-gray-200 disabled:to-gray-200 disabled:text-gray-400 text-white font-semibold rounded-2xl transition-all duration-200 flex items-center justify-center shadow-lg shadow-rose-500/25 disabled:shadow-none"
-              >
-                {isLoading ? (
-                  <div className="w-6 h-6 border-[3px] border-white/30 border-t-white rounded-full animate-spin" />
-                ) : (
-                  "Complete Registration"
-                )}
-              </button>
+              {/* Form Step */}
+              {step === "form" && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 px-3 py-1.5 rounded-full border border-green-100 w-fit">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Mobile Verified
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">Complete Registration</h3>
+                    <p className="text-sm text-gray-500 mt-0.5">Just a few more details</p>
+                  </div>
+                  {[
+                    { label: "Full Name", key: "name", type: "text", placeholder: "Your full name" },
+                    { label: "Email Address", key: "email", type: "email", placeholder: "your@email.com" },
+                    { label: "Mobile Number", key: "_mobile", type: "text", placeholder: mobile, disabled: true },
+                    { label: "City", key: "city", type: "text", placeholder: "Your city" },
+                  ].map((field) => (
+                    <div key={field.key}>
+                      <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wide">{field.label}</label>
+                      <input
+                        type={field.type}
+                        value={field.key === "_mobile" ? mobile : formData[field.key as keyof typeof formData]}
+                        onChange={(e) => field.key !== "_mobile" && setFormData({ ...formData, [field.key]: e.target.value })}
+                        placeholder={field.placeholder}
+                        disabled={field.key === "_mobile"}
+                        className={`w-full h-11 px-4 border rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all ${
+                          field.key === "_mobile" ? "bg-gray-100 border-gray-200 cursor-not-allowed text-gray-500" : "bg-gray-50 border-gray-200"
+                        }`}
+                      />
+                    </div>
+                  ))}
+                  <div>
+                    <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wide">Profession</label>
+                    <select
+                      value={formData.industry}
+                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                      className="w-full h-11 px-4 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all cursor-pointer"
+                    >
+                      <option value="">Select your profession</option>
+                      {industries.map((ind) => <option key={ind} value={ind}>{ind}</option>)}
+                    </select>
+                  </div>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={!formData.name || !formData.email || !formData.city || !formData.industry || isLoading}
+                    className="w-full h-12 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20"
+                  >
+                    {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Complete Registration"}
+                  </button>
+                </div>
+              )}
+
+              {/* Success */}
+              {step === "success" && (
+                <div className="text-center py-2">
+                  <div className="relative w-16 h-16 mx-auto mb-4">
+                    <div className="absolute inset-0 bg-green-400 rounded-full animate-ping opacity-20" />
+                    <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/30">
+                      <CheckCircle2 className="w-8 h-8 text-white" />
+                    </div>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">You&apos;re Registered!</h3>
+                  <p className="text-sm text-gray-500 mb-5">See you at {event.name}</p>
+                  <div className="text-left space-y-2 bg-gray-50 rounded-xl p-4 border border-gray-100 text-xs">
+                    {[
+                      ["Name", formData.name],
+                      ["Email", formData.email],
+                      ["Mobile", mobile],
+                      ["City", formData.city],
+                      ["Profession", formData.industry],
+                    ].map(([label, value]) => (
+                      <div key={label} className="flex justify-between gap-2 py-1 border-b border-gray-200 last:border-0">
+                        <span className="text-gray-500">{label}</span>
+                        <span className="font-semibold text-gray-900 text-right">{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 p-3 bg-rose-50 rounded-xl border border-rose-100">
+                    <p className="text-xs text-rose-700">Confirmation sent to your email & mobile.</p>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-
-          {/* Success */}
-          {step === "success" && (
-            <div className="text-center py-4">
-              <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full animate-ping opacity-20" />
-                <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl shadow-green-500/30">
-                  <CheckCircle2 className="w-12 h-12 text-white" />
-                </div>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">You&apos;re Registered!</h2>
-              <p className="text-gray-500 mb-8">We can&apos;t wait to see you at {event.name}</p>
-              
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl p-6 text-left space-y-3 text-sm border border-gray-100">
-                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                  <span className="text-gray-500">Name</span>
-                  <span className="font-semibold text-gray-900">{formData.name}</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                  <span className="text-gray-500">Email</span>
-                  <span className="font-semibold text-gray-900">{formData.email}</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                  <span className="text-gray-500">Mobile</span>
-                  <span className="font-semibold text-gray-900">{mobile}</span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-b border-gray-200">
-                  <span className="text-gray-500">Profession</span>
-                  <span className="font-semibold text-gray-900">{formData.industry}</span>
-                </div>
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-gray-500">Event</span>
-                  <span className="font-semibold text-gray-900">{event.name}</span>
-                </div>
-              </div>
-
-              <div className="mt-6 p-4 bg-rose-50 rounded-xl border border-rose-100">
-                <p className="text-sm text-rose-700">
-                  A confirmation has been sent to your email & mobile. Save this for entry at the venue.
-                </p>
-              </div>
-
-              <button
-                onClick={() => setStep("landing")}
-                className="mt-6 text-rose-600 font-medium hover:underline text-sm"
-              >
-                Back to Event Page
-              </button>
-            </div>
-          )}
+          </div>
         </div>
-
-        <p className="text-center text-xs text-gray-400 mt-6">
-          By registering, you agree to our Terms & Privacy Policy
-        </p>
       </div>
     </div>
   )
