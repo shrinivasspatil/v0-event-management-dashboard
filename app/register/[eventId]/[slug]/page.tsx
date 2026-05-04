@@ -112,10 +112,10 @@ export default function PublicRegistrationPage() {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col lg:flex-row max-w-screen-xl mx-auto w-full">
+      <div className="flex-1 flex flex-col lg:flex-row max-w-7xl mx-auto w-full">
 
-        {/* LEFT — 75% content */}
-        <div className="flex-1 lg:w-3/4 px-6 lg:px-12 py-10">
+        {/* LEFT — 60% content */}
+        <div className="flex-1 lg:w-3/5 px-6 lg:px-10 py-10">
 
           {/* Hero */}
           <div className="mb-10">
@@ -192,8 +192,8 @@ export default function PublicRegistrationPage() {
           </p>
         </div>
 
-        {/* RIGHT — 25% sticky form */}
-        <div className="lg:w-1/4 min-w-[300px] shrink-0 px-4 lg:px-6 py-10 lg:border-l border-gray-200">
+        {/* RIGHT — 40% sticky form */}
+        <div className="lg:w-2/5 min-w-[340px] shrink-0 px-4 lg:px-8 py-10 lg:border-l border-gray-200 bg-white lg:bg-gray-50">
           <div className="lg:sticky lg:top-24">
 
             {/* Progress */}
@@ -220,47 +220,47 @@ export default function PublicRegistrationPage() {
             )}
 
             {/* Card */}
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 lg:bg-transparent lg:border-0 lg:p-0 lg:shadow-none">
 
               {/* Mobile Step */}
               {step === "mobile" && (
-                <div className="space-y-5">
+                <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Register Now</h3>
-                    <p className="text-sm text-gray-500 mt-0.5">Enter your mobile to get started</p>
+                    <h3 className="text-2xl font-bold text-gray-900">Register Now</h3>
+                    <p className="text-base text-gray-500 mt-1">Enter your mobile to get started</p>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1.5 uppercase tracking-wide">Mobile Number</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2 uppercase tracking-wide">Mobile Number</label>
                     <input
                       type="tel"
                       value={mobile}
                       onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
                       placeholder="10-digit mobile number"
-                      className="w-full h-12 px-4 text-base bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
+                      className="w-full h-14 px-4 text-base bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
                     />
                   </div>
                   <button
                     onClick={handleSendOtp}
                     disabled={mobile.length < 10 || isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20"
+                    className="w-full h-14 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20 text-base"
                   >
                     {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Send OTP"}
                   </button>
-                  <p className="text-xs text-center text-gray-400">Free entry. No payment required.</p>
+                  <p className="text-sm text-center text-gray-400">Free entry. No payment required.</p>
                 </div>
               )}
 
               {/* OTP Step */}
               {step === "otp" && (
-                <div className="space-y-5">
-                  <button onClick={() => { setStep("mobile"); setOtp(["","","","","",""]) }} className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 transition-colors">
-                    <ArrowLeft className="w-3.5 h-3.5" /> Change number
+                <div className="space-y-6">
+                  <button onClick={() => { setStep("mobile"); setOtp(["","","","","",""]) }} className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-800 transition-colors">
+                    <ArrowLeft className="w-4 h-4" /> Change number
                   </button>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Enter OTP</h3>
-                    <p className="text-sm text-gray-500 mt-0.5">Sent to <span className="font-medium text-gray-700">{mobile}</span></p>
+                    <h3 className="text-2xl font-bold text-gray-900">Enter OTP</h3>
+                    <p className="text-base text-gray-500 mt-1">Sent to <span className="font-medium text-gray-700">{mobile}</span></p>
                   </div>
-                  <div className="flex justify-between gap-1.5">
+                  <div className="flex justify-between gap-2">
                     {otp.map((digit, i) => (
                       <input
                         key={i}
@@ -271,18 +271,18 @@ export default function PublicRegistrationPage() {
                         value={digit}
                         onChange={(e) => handleOtpChange(i, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                        className="w-10 h-12 text-center text-xl font-bold bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
+                        className="w-12 h-14 text-center text-2xl font-bold bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all"
                       />
                     ))}
                   </div>
                   <button
                     onClick={handleVerifyOtp}
                     disabled={otp.some((d) => !d) || isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20"
+                    className="w-full h-14 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20 text-base"
                   >
                     {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Verify & Continue"}
                   </button>
-                  <p className="text-xs text-center text-gray-500">
+                  <p className="text-sm text-center text-gray-500">
                     {resendTimer > 0 ? (
                       <>Resend in <span className="font-medium text-gray-700">{resendTimer}s</span></>
                     ) : (
@@ -294,13 +294,13 @@ export default function PublicRegistrationPage() {
 
               {/* Form Step */}
               {step === "form" && (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 text-xs text-green-700 bg-green-50 px-3 py-1.5 rounded-full border border-green-100 w-fit">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Mobile Verified
+                <div className="space-y-5">
+                  <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-2 rounded-full border border-green-100 w-fit">
+                    <CheckCircle2 className="w-4 h-4" /> Mobile Verified
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-gray-900">Complete Registration</h3>
-                    <p className="text-sm text-gray-500 mt-0.5">Just a few more details</p>
+                    <h3 className="text-2xl font-bold text-gray-900">Complete Registration</h3>
+                    <p className="text-base text-gray-500 mt-1">Just a few more details</p>
                   </div>
                   {[
                     { label: "Full Name", key: "name", type: "text", placeholder: "Your full name" },
@@ -309,25 +309,25 @@ export default function PublicRegistrationPage() {
                     { label: "City", key: "city", type: "text", placeholder: "Your city" },
                   ].map((field) => (
                     <div key={field.key}>
-                      <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wide">{field.label}</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2 uppercase tracking-wide">{field.label}</label>
                       <input
                         type={field.type}
                         value={field.key === "_mobile" ? mobile : formData[field.key as keyof typeof formData]}
                         onChange={(e) => field.key !== "_mobile" && setFormData({ ...formData, [field.key]: e.target.value })}
                         placeholder={field.placeholder}
                         disabled={field.key === "_mobile"}
-                        className={`w-full h-11 px-4 border rounded-xl text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all ${
+                        className={`w-full h-13 px-4 border rounded-xl text-base text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all ${
                           field.key === "_mobile" ? "bg-gray-100 border-gray-200 cursor-not-allowed text-gray-500" : "bg-gray-50 border-gray-200"
                         }`}
                       />
                     </div>
                   ))}
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1 uppercase tracking-wide">Profession</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2 uppercase tracking-wide">Profession</label>
                     <select
                       value={formData.industry}
                       onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                      className="w-full h-11 px-4 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all cursor-pointer"
+                      className="w-full h-13 px-4 bg-gray-50 border border-gray-200 rounded-xl text-base text-gray-900 focus:outline-none focus:border-rose-400 focus:ring-4 focus:ring-rose-500/10 transition-all cursor-pointer"
                     >
                       <option value="">Select your profession</option>
                       {industries.map((ind) => <option key={ind} value={ind}>{ind}</option>)}
@@ -336,7 +336,7 @@ export default function PublicRegistrationPage() {
                   <button
                     onClick={handleSubmit}
                     disabled={!formData.name || !formData.email || !formData.city || !formData.industry || isLoading}
-                    className="w-full h-12 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20"
+                    className="w-full h-14 bg-gradient-to-r from-rose-500 to-violet-600 hover:opacity-90 disabled:opacity-40 text-white font-semibold rounded-xl transition-all flex items-center justify-center shadow-md shadow-rose-500/20 text-base"
                   >
                     {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : "Complete Registration"}
                   </button>
